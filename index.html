@@ -111,6 +111,23 @@
   .v2share:hover{ color:var(--accent); border-color:var(--accent); }
   .v2foot{ text-align:center; margin-top:16px; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:#5a5570; }
   .copy-link{ cursor:copy; }
+  /* icônes sociales monochromes façon guns.lol (couleur au survol) */
+  .v2social a{ color:var(--text-dim) !important; }
+  .v2social a:hover{ color:var(--text) !important; filter:drop-shadow(0 0 6px var(--accent)); }
+  /* pied de page vues + likes (façon guns.lol) */
+  .v2bottom{ display:flex; align-items:center; justify-content:center; gap:14px; margin-top:4px; }
+  .v2eye{ display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-dim); }
+  .v2eye svg{ width:14px; height:14px; }
+  /* bouton like (cœur) — commun V1/V2 */
+  .likebtn{ display:inline-flex; align-items:center; gap:7px; padding:8px 14px; border-radius:999px; cursor:pointer;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); color:var(--text-dim);
+    font-family:'JetBrains Mono',monospace; font-size:12px; transition:all .15s ease; }
+  .likebtn svg{ width:16px; height:16px; transition:transform .2s cubic-bezier(.2,.8,.2,1); }
+  .likebtn:hover{ border-color:#ff5e8a; color:#ff9db6; }
+  .likebtn.liked{ border-color:#ff2d6f; color:#ff5e8a; background:rgba(255,45,111,.12); }
+  .likebtn.liked svg{ fill:#ff2d6f; transform:scale(1.15); }
+  @keyframes likepop{ 0%{transform:scale(1);} 40%{transform:scale(1.4);} 100%{transform:scale(1.15);} }
+  .likebtn.pop svg{ animation:likepop .35s ease; }
 
   .profilebox{ width:100%; display:flex; flex-direction:column; align-items:center; gap:16px; opacity:var(--op-card); }
   .avatar{ width:96px; height:96px; border-radius:50%; background:linear-gradient(160deg, color-mix(in srgb,var(--accent) 30%,#1a1d22), #0f1113); border:2px solid color-mix(in srgb,var(--accent) 40%,transparent); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-size:36px; font-weight:600; color:var(--text); overflow:hidden; opacity:var(--op-avatar); }
@@ -518,7 +535,7 @@ async function uploadBgVideo(file,uid){
   return SUPABASE_URL+'/storage/v1/object/public/backgrounds/'+path+'?v='+Date.now();
 }
 async function sha256(s){ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)); return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''); }
-function mapRow(r){ return {uid:r.uid,username:r.username,hash:r.password_hash,tag:r.tag,bio:r.bio,accent:r.accent,links:r.links||[],wallpaper:r.wallpaper||'',theme:r.theme||'glass',avatar:r.avatar||'',customText:r.custom_text||'',opacity:{...DEFAULT_OP,...(r.opacity||{})},isAdmin:!!r.is_admin,banned:!!r.banned,music:r.music||'',views:r.views||0,viewsBonus:r.views_bonus||0,effects:{...DEFAULT_EFFECTS,...(r.effects||{})},badges:r.badges||[],cursorUrl:r.cursor_url||'',discordId:r.discord_id||'',discordUsername:r.discord_username||'',discordGlobalName:r.discord_global_name||'',discordAvatar:r.discord_avatar||'',role:r.role||'user',staffNote:r.staff_note||'',deletedAt:r.deleted_at||null,accountType:r.account_type||'real',excludeFromStats:!!r.exclude_from_stats,seedBatch:r.seed_batch||null,createdByUid:r.created_by_uid||null}; }
+function mapRow(r){ return {uid:r.uid,username:r.username,hash:r.password_hash,tag:r.tag,bio:r.bio,accent:r.accent,links:r.links||[],wallpaper:r.wallpaper||'',theme:r.theme||'glass',avatar:r.avatar||'',customText:r.custom_text||'',opacity:{...DEFAULT_OP,...(r.opacity||{})},isAdmin:!!r.is_admin,banned:!!r.banned,music:r.music||'',views:r.views||0,viewsBonus:r.views_bonus||0,effects:{...DEFAULT_EFFECTS,...(r.effects||{})},badges:r.badges||[],cursorUrl:r.cursor_url||'',discordId:r.discord_id||'',discordUsername:r.discord_username||'',discordGlobalName:r.discord_global_name||'',discordAvatar:r.discord_avatar||'',role:r.role||'user',staffNote:r.staff_note||'',deletedAt:r.deleted_at||null,accountType:r.account_type||'real',excludeFromStats:!!r.exclude_from_stats,seedBatch:r.seed_batch||null,createdByUid:r.created_by_uid||null,likes:r.likes||0}; }
 function isDemo(p){ return p && p.accountType && p.accountType!=='real'; }
 
 // ===== disponibilité pseudo / uid (correction du faux "déjà pris") =====
@@ -658,6 +675,13 @@ function openBadgeDefModal(existing){
   });
 }
 async function incrementViews(uid){ try{ await fetch(REST+'/rpc/increment_views',{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify({target_uid:uid})}); }catch(e){} }
+// ===== likes de compte (1 like par navigateur, mémorisé en localStorage, RPC atomique) =====
+function hasLiked(uid){ try{ return localStorage.getItem('xdez_liked_'+uid)==='1'; }catch(e){ return false; } }
+function setLiked(uid,on){ try{ on?localStorage.setItem('xdez_liked_'+uid,'1'):localStorage.removeItem('xdez_liked_'+uid); }catch(e){} }
+async function rpcLike(uid,dir){
+  const res=await fetch(REST+'/rpc/'+(dir>0?'increment_likes':'decrement_likes'),{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({target_uid:uid})});
+  const t=await res.text().catch(()=>''); const n=parseInt(t,10); return isNaN(n)?null:n;
+}
 
 let session=null,view='profile',viewingUid=null,formError='';
 let badgeDefsCache=null, adminSubtab='users';
@@ -820,6 +844,7 @@ function profileHTML(p,isOwner){
     ${discordCard}
     ${p.customText?`<div class="customtext">${esc(p.customText)}</div>`:''}
     ${buttonHtml?`<div class="links">${buttonHtml}</div>`:''}
+    <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:2px;">${likeBtnHTML(p)}</div>
     ${isOwner?'<button class="btn ghost small" id="editBtn">✎ éditer mon profil</button>':''}
     <button class="sharebtn" id="shareBtn">🔗 copier le lien de ce profil</button>
     <footer>uid ${p.uid} · xdez</footer>
@@ -867,10 +892,22 @@ function profileHTMLv2(p,isOwner){
     ${discordCard}
     ${p.customText?`<div class="customtext" style="color:#c9c4d8">${esc(p.customText)}</div>`:''}
     ${buttonHtml?`<div class="v2links">${buttonHtml}</div>`:''}
+    <div class="v2bottom">
+      <span class="v2eye"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg><b id="viewCount2" style="color:var(--text)">${totalViews}</b></span>
+      ${likeBtnHTML(p)}
+    </div>
     ${isOwner?'<button class="btn ghost small" id="editBtn" style="margin-top:2px">✎ éditer mon profil</button>':''}
     <button class="v2share" id="shareBtn">↗ copier le lien de ce profil</button>
     <div class="v2foot">uid ${p.uid} · gunzyx</div>
   </div></div>`;
+}
+
+// bouton like (cœur) partagé V1 + V2
+function likeBtnHTML(p){
+  const liked=hasLiked(p.uid);
+  return `<button class="likebtn${liked?' liked':''}" id="likeBtn" title="${liked?'Retirer le like':'Aimer ce profil'}">
+    <svg viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+    <b id="likeCount">${p.likes||0}</b></button>`;
 }
 
 async function render(){
@@ -1278,6 +1315,25 @@ async function render(){
       navigator.clipboard.writeText(v).then(()=>toast('Copié : '+v,'ok')).catch(()=>{ prompt('Copie :',v); }); });
   });
   if(isOwner) document.getElementById('editBtn').onclick=()=>{view='edit';render();};
+  // bouton like (1 par navigateur, réversible)
+  const likeBtn=document.getElementById('likeBtn');
+  if(likeBtn){
+    let busy=false;
+    likeBtn.onclick=async()=>{
+      if(busy) return; busy=true;
+      const cnt=document.getElementById('likeCount');
+      const willLike=!hasLiked(p.uid);
+      // optimiste
+      likeBtn.classList.toggle('liked',willLike);
+      likeBtn.querySelector('svg').setAttribute('fill',willLike?'currentColor':'none');
+      if(willLike) likeBtn.classList.add('pop'); setTimeout(()=>likeBtn.classList.remove('pop'),380);
+      let cur=parseInt(cnt.textContent,10)||0; cnt.textContent=Math.max(0,cur+(willLike?1:-1));
+      setLiked(p.uid,willLike);
+      try{ const n=await rpcLike(p.uid,willLike?1:-1); if(n!=null){ cnt.textContent=n; p.likes=n; } }
+      catch(e){ /* on garde l'affichage optimiste */ }
+      busy=false;
+    };
+  }
   const uidChip=document.getElementById('uidChip');
   if(uidChip) uidChip.onclick=()=>{ navigator.clipboard.writeText(String(p.uid)).then(()=>toast('UID copié','ok')).catch(()=>{}); };
   document.getElementById('shareBtn').onclick=()=>{
@@ -1297,7 +1353,7 @@ async function render(){
   // music
   setupMusic(p);
   // views: incrémenter si ce n'est pas mon propre profil
-  if(!isOwner && !p.excludeFromStats){ incrementViews(p.uid); const vc=document.getElementById('viewCount'); if(vc) vc.textContent=(p.views||0)+(p.viewsBonus||0)+1; }
+  if(!isOwner && !p.excludeFromStats){ incrementViews(p.uid); const nv=(p.views||0)+(p.viewsBonus||0)+1; const vc=document.getElementById('viewCount'); if(vc) vc.textContent=nv; const vc2=document.getElementById('viewCount2'); if(vc2) vc2.textContent=nv; }
   // curseur personnalisé
   applyCursor(p.cursorUrl);
   // tilt 3D
