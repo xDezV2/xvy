@@ -6,6 +6,7 @@
 <title>xdez</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --accent:#8fb39d; --bg:#0d0f13; --text:#edece8; --text-dim:#9a9ea6;
@@ -245,12 +246,20 @@
   .avatar-ring::before{ content:''; position:absolute; inset:3px; border-radius:50%; background:var(--bg); z-index:0; }
   .avatar-wrap .avatar{ position:relative; z-index:1; width:96px; height:96px; margin:0; border:none;
     box-shadow:inset 0 0 0 2px rgba(255,255,255,.06), 0 10px 30px rgba(0,0,0,.45); }
-  /* couronne de badges — SOUS l'avatar, jamais dans la zone du nom */
-  .badges-crown{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:300px; }
-  .badges-crown .badge{ width:26px; height:26px; padding:4px; border-radius:50%;
-    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); box-sizing:border-box; }
-  @media (max-width:420px){ .badges-crown{ flex-wrap:nowrap; overflow-x:auto; max-width:88vw; padding-bottom:2px; scrollbar-width:none; justify-content:flex-start; }
-    .badges-crown::-webkit-scrollbar{ display:none; } }
+  /* badges = ligne dédiée, pills icône + NOM toujours lisible, jamais recouvert par l'avatar */
+  .badge-strip{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; max-width:330px; margin:2px auto 0; }
+  .badge-pill{ display:inline-flex; align-items:center; gap:6px; padding:5px 12px 5px 9px; border-radius:999px;
+    background:rgba(255,255,255,.05); border:1px solid color-mix(in srgb,currentColor 30%,rgba(255,255,255,.12));
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; cursor:default;
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+  .badge-pill:hover{ transform:translateY(-2px); border-color:currentColor; box-shadow:0 5px 16px color-mix(in srgb,currentColor 28%,transparent); }
+  .badge-pill .bico{ width:15px; height:15px; display:flex; flex-shrink:0; }
+  .badge-pill .bico svg{ width:100%; height:100%; }
+  .badge-pill .bname{ color:var(--text); white-space:nowrap; }
+  .badge-pill.rarity-legendary{ animation:shimmer 2.5s linear infinite; }
+  @media (max-width:420px){ .badge-strip{ max-width:90vw; } }
+  /* n'affiche l'ancienne infobulle .badge que si data-tip présent (évite les boîtes vides en admin) */
+  .badge:not([data-tip])::after, .badge:not([data-tip])::before{ display:none; }
 
   .name-row{ display:flex; align-items:center; gap:8px; justify-content:center; flex-wrap:wrap; }
   .name-row .name{ font-family:'Space Grotesk',sans-serif; font-size:27px; font-weight:600; letter-spacing:-.3px; }
@@ -689,7 +698,10 @@ function profileHTML(p,isOwner){
     return `<a class="link" href="${esc(l.url)}" target="_blank" rel="noopener"><span class="ico" style="color:${plat.color}">${iconFor(l.platform)}</span><span class="lbl"><span class="plat">${plat.name}</span><span class="txt">${esc(l.label||plat.name)}</span></span><span class="arrow">→</span></a>`;
   }).join('');
   const defs=badgeDefsCache||[];
-  const badgesHtml=(p.badges||[]).map(bid=>{ const def=defs.find(d=>d.id===bid); if(!def||!def.enabled) return ''; return `<span class="badge rarity-${def.rarity}" data-tip="${esc(def.name)}" style="color:${def.color}">${badgeIconSvg(def.icon)}</span>`; }).filter(Boolean).join('');
+  const RARITY_LABEL={common:'Commun',rare:'Rare',epic:'Épique',legendary:'Légendaire'};
+  const badgesHtml=(p.badges||[]).map(bid=>{ const def=defs.find(d=>d.id===bid); if(!def||!def.enabled) return '';
+    return `<span class="badge-pill rarity-${def.rarity}" style="color:${def.color}" title="${esc(def.name)} · ${RARITY_LABEL[def.rarity]||def.rarity}"><span class="bico">${badgeIconSvg(def.icon)}</span><span class="bname">${esc(def.name)}</span></span>`;
+  }).filter(Boolean).join('');
   const av=p.avatar?`<img src="${esc(p.avatar)}" alt="">`:(p.username||'?')[0].toUpperCase();
   const totalViews=(p.views||0)+(p.viewsBonus||0);
   const linkedAvatar=p.discordAvatar||'';
@@ -702,11 +714,11 @@ function profileHTML(p,isOwner){
   return `<div class="tiltwrap"><div class="profilebox" id="tiltBox">
     <div class="avatar-wrap">
       <div class="avatar-ring"><div class="avatar">${av}</div></div>
-      ${badgesHtml?`<div class="badges-crown">${badgesHtml}</div>`:''}
     </div>
     <div class="identity">
       <div class="name-row"><span class="name" id="nameEl">${esc(p.username)}</span>${isStaffPlus(session)&&isDemo(p)?`<span class="badge-demo">${p.accountType}</span>`:''}</div>
       <div class="id-row"><span class="uid-chip" id="uidChip" title="copier l'UID">UID ${p.uid}</span><span class="tag">${esc(p.tag)}</span></div>
+      ${badgesHtml?`<div class="badge-strip">${badgesHtml}</div>`:''}
       <div class="status"><span class="dot"></span>en ligne</div>
       ${p.bio?`<p class="bio" id="bioEl" data-full="${esc(p.bio)}"></p>`:''}
       <div class="stat-row"><span class="stat-pill">👁 <b id="viewCount">${totalViews}</b> vues</span></div>
@@ -1136,37 +1148,74 @@ function applyCursor(url){
   if(url){ document.body.style.cursor='url("'+url+'"), auto'; }
   else { document.body.style.cursor=''; }
 }
-// ===== Discord OAuth (via le provider Supabase) =====
-// L'échange du code se fait côté serveur par Supabase (secret jamais exposé).
-// Prérequis : activer Discord dans Dashboard → Authentication → Providers,
-// et ajouter l'URL du site dans les "Redirect URLs".
-function startDiscordLink(){
-  if(!session){ toast("Connecte-toi d'abord",'err'); return; }
-  try{ localStorage.setItem('xdez_discord_return',JSON.stringify({uid:session.uid})); }catch(e){}
-  const redirect=location.origin+location.pathname;
-  location.href=SUPABASE_URL+'/auth/v1/authorize?provider=discord&redirect_to='+encodeURIComponent(redirect);
+// ===== Discord OAuth2 (librairie officielle Supabase, flux PKCE, sans bot ni serveur) =====
+// L'échange du code se fait côté Supabase (le client secret n'est JAMAIS exposé au navigateur).
+// Ce client Supabase Auth sert UNIQUEMENT au login Discord ; l'auth de l'app reste maison.
+let sbAuth=null;
+function getSbAuth(){
+  if(sbAuth) return sbAuth;
+  if(!window.supabase || !window.supabase.createClient) return null;
+  sbAuth=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
+    auth:{ detectSessionInUrl:true, persistSession:true, autoRefreshToken:true, flowType:'pkce', storageKey:'xdez_sb_oauth' }
+  });
+  return sbAuth;
 }
+// Vérifie côté Supabase si le provider Discord est activé (évite d'envoyer l'utilisateur
+// sur une page d'erreur 400 quand le provider n'est pas configuré).
+async function isDiscordEnabled(){
+  try{ const r=await fetch(SUPABASE_URL+'/auth/v1/settings',{headers:{'apikey':SUPABASE_KEY}}); const j=await r.json(); return !!(j&&j.external&&j.external.discord); }
+  catch(e){ return true; } // en cas d'échec réseau, on tente quand même
+}
+async function startDiscordLink(){
+  if(!session){ toast("Connecte-toi d'abord",'err'); return; }
+  const client=getSbAuth();
+  if(!client){ toast('Librairie Supabase non chargée (réseau ?)','err'); return; }
+  if(!(await isDiscordEnabled())){ toast("Discord n'est pas encore activé dans Supabase — voir la configuration à faire",'err'); return; }
+  try{ localStorage.setItem('xdez_discord_return',JSON.stringify({uid:session.uid})); }catch(e){}
+  const { error }=await client.auth.signInWithOAuth({
+    provider:'discord',
+    options:{ redirectTo: location.origin+location.pathname }
+  });
+  if(error){
+    localStorage.removeItem('xdez_discord_return');
+    if(/provider is not enabled|not enabled|unsupported/i.test(error.message||''))
+      toast("Discord n'est pas activé dans Supabase (voir la config)",'err');
+    else toast('Erreur Discord : '+(error.message||'inconnue'),'err');
+  }
+}
+// Au retour d'OAuth, la lib échange le code (PKCE) automatiquement ; on lit la session,
+// on extrait l'identité Discord et on la lie au profil. On ne conserve pas la session Auth.
 async function handleDiscordCallback(){
-  if(!location.hash || location.hash.indexOf('access_token')<0) return false;
-  const params=new URLSearchParams(location.hash.slice(1));
-  const at=params.get('access_token');
-  history.replaceState(null,'',location.pathname+location.search); // nettoie l'URL immédiatement
-  if(!at) return false;
-  let ret={}; try{ ret=JSON.parse(localStorage.getItem('xdez_discord_return')||'{}'); }catch(e){}
-  localStorage.removeItem('xdez_discord_return');
+  const isReturn = location.search.indexOf('code=')>=0 || location.hash.indexOf('access_token')>=0 || location.hash.indexOf('error')>=0;
+  let ret=null; try{ ret=JSON.parse(localStorage.getItem('xdez_discord_return')||'null'); }catch(e){}
+  if(!isReturn && !ret) return false;
+  const client=getSbAuth();
+  if(!client){ return false; }
+  if(location.hash.indexOf('error')>=0){
+    localStorage.removeItem('xdez_discord_return');
+    history.replaceState(null,'',location.pathname);
+    toast('Discord : connexion annulée ou refusée','err');
+    return false;
+  }
+  let sess=null;
+  try{ const { data }=await client.auth.getSession(); sess=data && data.session; }catch(e){}
+  if(!sess || !ret || !ret.uid){ return false; }
   try{
-    const res=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+at}});
-    const u=await res.json();
+    const u=sess.user||{};
     const m=u.user_metadata||{};
-    const discordId=m.provider_id||m.sub||(u.identities&&u.identities[0]&&u.identities[0].id)||'';
+    const ident=(u.identities||[]).find(i=>i.provider==='discord');
+    const discordId=m.provider_id||m.sub||(ident&&ident.id)||'';
     const globalName=(m.custom_claims&&m.custom_claims.global_name)||'';
     const username=m.full_name||m.name||m.user_name||m.preferred_username||'';
     const avatar=m.avatar_url||m.picture||'';
-    if(ret.uid && discordId){
+    if(discordId){
       await pgFetch('/profiles?uid=eq.'+ret.uid,{method:'PATCH',body:JSON.stringify({discord_id:discordId,discord_username:username,discord_global_name:globalName||username,discord_avatar:avatar})});
       toast('Compte Discord lié ✓','ok');
-    } else { toast('Liaison Discord incomplète','err'); }
+    } else { toast('Liaison Discord incomplète (identité manquante)','err'); }
   }catch(e){ toast('Liaison Discord échouée','err'); }
+  try{ await client.auth.signOut(); }catch(e){}       // on ne garde pas la session Supabase Auth
+  localStorage.removeItem('xdez_discord_return');
+  history.replaceState(null,'',location.pathname);
   return true;
 }
 function renderDiscordLinkBox(p){
