@@ -53,8 +53,6 @@
 
   .identity{ text-align:center; display:flex; flex-direction:column; gap:8px; align-items:center; opacity:var(--op-text); }
   .name{ font-family:'Space Grotesk',sans-serif; font-size:27px; font-weight:600; letter-spacing:-.3px; position:relative; cursor:default; }
-  .name .uidtip{ position:absolute; top:-30px; left:50%; transform:translateX(-50%) translateY(4px); background:var(--accent); color:#0a0d0a; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; padding:3px 8px; border-radius:6px; white-space:nowrap; opacity:0; pointer-events:none; transition:all .18s ease; }
-  .name:hover .uidtip, .name.show .uidtip{ opacity:1; transform:translateX(-50%) translateY(0); }
   .badge-admin{ font-size:11px; color:#e0b05e; font-family:'JetBrains Mono',monospace; border:1px solid rgba(224,176,94,.4); padding:2px 7px; border-radius:6px; margin-left:6px; vertical-align:middle; }
   .badge-demo{ font-size:11px; color:#b57edc; font-family:'JetBrains Mono',monospace; border:1px dashed rgba(181,126,220,.5); padding:2px 7px; border-radius:6px; margin-left:6px; vertical-align:middle; text-transform:uppercase; letter-spacing:.5px; }
   .status{ display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-dim); }
@@ -236,6 +234,51 @@
   .subtabs button.active{ background:var(--accent); color:#0a0d0a; border-color:transparent; }
   .logrow{ font-family:'JetBrains Mono',monospace; font-size:11px; padding:8px 10px; background:rgba(0,0,0,.2); border:1px solid rgba(255,255,255,.06); border-radius:8px; line-height:1.5; }
   .logrow .la{ color:var(--accent); } .logrow .lt{ color:var(--text-dim); }
+
+  /* ============================================================
+     HUD v2 — carte profil premium (avatar + badges + UID séparés)
+     ============================================================ */
+  .avatar-wrap{ position:relative; display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .avatar-ring{ position:relative; width:104px; height:104px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:conic-gradient(from 180deg, color-mix(in srgb,var(--accent) 65%,transparent), transparent 55%, color-mix(in srgb,var(--accent) 45%,transparent));
+    box-shadow:0 0 24px color-mix(in srgb,var(--accent) 22%,transparent); }
+  .avatar-ring::before{ content:''; position:absolute; inset:3px; border-radius:50%; background:var(--bg); z-index:0; }
+  .avatar-wrap .avatar{ position:relative; z-index:1; width:96px; height:96px; margin:0; border:none;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.06), 0 10px 30px rgba(0,0,0,.45); }
+  /* couronne de badges — SOUS l'avatar, jamais dans la zone du nom */
+  .badges-crown{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:300px; }
+  .badges-crown .badge{ width:26px; height:26px; padding:4px; border-radius:50%;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); box-sizing:border-box; }
+  @media (max-width:420px){ .badges-crown{ flex-wrap:nowrap; overflow-x:auto; max-width:88vw; padding-bottom:2px; scrollbar-width:none; justify-content:flex-start; }
+    .badges-crown::-webkit-scrollbar{ display:none; } }
+
+  .name-row{ display:flex; align-items:center; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .name-row .name{ font-family:'Space Grotesk',sans-serif; font-size:27px; font-weight:600; letter-spacing:-.3px; }
+  .id-row{ display:flex; align-items:center; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .uid-chip{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.1); padding:3px 10px; border-radius:999px; letter-spacing:.5px; cursor:pointer; transition:all .15s ease; }
+  .uid-chip:hover{ color:var(--text); border-color:var(--accent); }
+  .stat-row{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:2px; }
+  .stat-pill{ display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim);
+    background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.08); padding:5px 11px; border-radius:999px; }
+  .stat-pill b{ color:var(--text); font-weight:600; }
+
+  /* boutons premium */
+  .btn{ position:relative; box-shadow:0 4px 16px color-mix(in srgb,var(--accent) 22%,transparent); }
+  .btn:hover{ box-shadow:0 6px 22px color-mix(in srgb,var(--accent) 32%,transparent); }
+  .btn.ghost, .btn.danger{ box-shadow:none; }
+  .btn-discord{ display:flex; align-items:center; justify-content:center; gap:9px; width:100%; background:#5865F2; color:#fff; border:none;
+    border-radius:10px; padding:12px 16px; font-size:14px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif;
+    box-shadow:0 4px 16px rgba(88,101,242,.35); transition:transform .1s ease, box-shadow .15s ease; }
+  .btn-discord:hover{ box-shadow:0 6px 22px rgba(88,101,242,.5); } .btn-discord:active{ transform:scale(.98); }
+  .btn-discord svg{ width:20px; height:20px; }
+
+  /* loader propre */
+  .loader-dots{ display:inline-flex; gap:5px; align-items:center; }
+  .loader-dots i{ width:7px; height:7px; border-radius:50%; background:var(--accent); animation:ld 1s ease-in-out infinite; }
+  .loader-dots i:nth-child(2){ animation-delay:.15s; } .loader-dots i:nth-child(3){ animation-delay:.3s; }
+  @keyframes ld{ 0%,100%{opacity:.25; transform:translateY(0);} 50%{opacity:1; transform:translateY(-4px);} }
+  @media (prefers-reduced-motion:reduce){ .loader-dots i{ animation:none; opacity:.6; } }
 </style>
 </head>
 <body class="no-wall theme-glass">
@@ -245,7 +288,7 @@
 <video id="wallpaperVideo" autoplay muted loop playsinline></video>
 <div id="wallpaper-overlay"></div>
 <div class="topbar"><div class="who" id="sessionInfo">…</div><div class="acts" id="topbarActions"></div></div>
-<div class="wrap"><div id="app" class="card"><div class="loading">chargement…</div></div></div>
+<div class="wrap"><div id="app" class="card"><div class="loading"><span class="loader-dots"><i></i><i></i><i></i></span></div></div></div>
 
 <script>
 const SUPABASE_URL='https://qasngtowguktqgjjajjy.supabase.co';
@@ -391,25 +434,60 @@ async function pgFetch(path,options={}){
   const t=await res.text(); return t?JSON.parse(t):null;
 }
 async function sha256(s){ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)); return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''); }
-function mapRow(r){ return {uid:r.uid,username:r.username,hash:r.password_hash,tag:r.tag,bio:r.bio,accent:r.accent,links:r.links||[],wallpaper:r.wallpaper||'',theme:r.theme||'glass',avatar:r.avatar||'',customText:r.custom_text||'',opacity:{...DEFAULT_OP,...(r.opacity||{})},isAdmin:!!r.is_admin,banned:!!r.banned,music:r.music||'',views:r.views||0,viewsBonus:r.views_bonus||0,effects:{...DEFAULT_EFFECTS,...(r.effects||{})},badges:r.badges||[],cursorUrl:r.cursor_url||'',discordId:r.discord_id||'',role:r.role||'user',staffNote:r.staff_note||'',deletedAt:r.deleted_at||null,accountType:r.account_type||'real',excludeFromStats:!!r.exclude_from_stats,seedBatch:r.seed_batch||null,createdByUid:r.created_by_uid||null}; }
+function mapRow(r){ return {uid:r.uid,username:r.username,hash:r.password_hash,tag:r.tag,bio:r.bio,accent:r.accent,links:r.links||[],wallpaper:r.wallpaper||'',theme:r.theme||'glass',avatar:r.avatar||'',customText:r.custom_text||'',opacity:{...DEFAULT_OP,...(r.opacity||{})},isAdmin:!!r.is_admin,banned:!!r.banned,music:r.music||'',views:r.views||0,viewsBonus:r.views_bonus||0,effects:{...DEFAULT_EFFECTS,...(r.effects||{})},badges:r.badges||[],cursorUrl:r.cursor_url||'',discordId:r.discord_id||'',discordUsername:r.discord_username||'',discordGlobalName:r.discord_global_name||'',discordAvatar:r.discord_avatar||'',role:r.role||'user',staffNote:r.staff_note||'',deletedAt:r.deleted_at||null,accountType:r.account_type||'real',excludeFromStats:!!r.exclude_from_stats,seedBatch:r.seed_batch||null,createdByUid:r.created_by_uid||null}; }
 function isDemo(p){ return p && p.accountType && p.accountType!=='real'; }
 
-async function usernameTaken(u){ const r=await pgFetch('/profiles?username=ilike.'+encodeURIComponent(u)+'&select=uid'); return r&&r.length?r[0]:null; }
+// ===== disponibilité pseudo / uid (correction du faux "déjà pris") =====
+// Comparaison en JS insensible à la casse, sans ilike (donc aucun faux positif
+// dû aux jokers %/_ dans un pseudo) et en excluant TOUJOURS le compte courant.
+async function isUsernameAvailable(name, excludeUid){
+  const target=(name||'').trim().toLowerCase();
+  if(!target) return false;
+  const r=await pgFetch('/profiles?select=uid,username');
+  return !(r||[]).some(row=>row.username.toLowerCase()===target && row.uid!==excludeUid);
+}
+async function isUidAvailable(uid, excludeUid){
+  const n=parseInt(uid,10); if(!n||n<1) return false;
+  // pas de filtre deleted_at : un uid tenu par un compte en corbeille reste pris.
+  const r=await pgFetch('/profiles?uid=eq.'+n+'&select=uid');
+  return !(r||[]).some(row=>row.uid!==excludeUid);
+}
 async function createAccount(u,p){
-  if(await usernameTaken(u)) return {ok:false,error:'Ce pseudo est déjà pris.'};
+  const uname=(u||'').trim();
+  if(uname.length<2) return {ok:false,error:'Pseudo trop court (2 caractères min).'};
+  if(!(await isUsernameAvailable(uname,null))) return {ok:false,error:'Ce pseudo est déjà pris.'};
   const hash=await sha256(p);
   try{
-    const r=await pgFetch('/profiles',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify({username:u,password_hash:hash,tag:'@'+u.toLowerCase(),bio:'Nouveau membre.',accent:ACCENTS[0],links:[],wallpaper:'',theme:'glass',avatar:'',custom_text:'',opacity:DEFAULT_OP,music:'',effects:DEFAULT_EFFECTS,badges:[],cursor_url:'',discord_id:''})});
+    const r=await pgFetch('/profiles',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify({username:uname,password_hash:hash,tag:'@'+uname.toLowerCase(),bio:'Nouveau membre.',accent:ACCENTS[0],links:[],wallpaper:'',theme:'glass',avatar:'',custom_text:'',opacity:DEFAULT_OP,music:'',effects:DEFAULT_EFFECTS,badges:[],cursor_url:'',discord_id:''})});
     return {ok:true,profile:mapRow(r[0])};
-  }catch(e){ return {ok:false,error:'Erreur lors de la création.'}; }
+  }catch(e){ return {ok:false,error:'Ce pseudo est déjà pris.'}; }
 }
 async function login(u,p){
-  const r=await pgFetch('/profiles?username=ilike.'+encodeURIComponent(u)+'&select=*');
-  if(!r||!r.length) return {ok:false,error:'Compte introuvable.'};
-  if(r[0].banned) return {ok:false,error:'Ce compte est banni.'};
-  if(r[0].deleted_at) return {ok:false,error:'Ce compte n\'existe plus.'};
-  if(await sha256(p)!==r[0].password_hash) return {ok:false,error:'Mot de passe incorrect.'};
-  return {ok:true,profile:mapRow(r[0])};
+  const uname=(u||'').trim().toLowerCase();
+  if(!uname) return {ok:false,error:'Compte introuvable.'};
+  const all=await pgFetch('/profiles?select=*');
+  const row=(all||[]).find(x=>x.username.toLowerCase()===uname);
+  if(!row) return {ok:false,error:'Compte introuvable.'};
+  if(row.banned) return {ok:false,error:'Ce compte est banni.'};
+  if(row.deleted_at) return {ok:false,error:'Ce compte n\'existe plus.'};
+  if(await sha256(p)!==row.password_hash) return {ok:false,error:'Mot de passe incorrect.'};
+  return {ok:true,profile:mapRow(row)};
+}
+// ===== persistance de session (localStorage + re-validation au boot) =====
+const SESSION_KEY='xdez_session_v1';
+function saveSession(p){ try{ localStorage.setItem(SESSION_KEY,JSON.stringify({uid:p.uid,hash:p.hash})); }catch(e){} }
+function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
+async function restoreSession(){
+  let raw; try{ raw=localStorage.getItem(SESSION_KEY); }catch(e){ return null; }
+  if(!raw) return null;
+  let s; try{ s=JSON.parse(raw); }catch(e){ clearSession(); return null; }
+  if(!s||!s.uid){ clearSession(); return null; }
+  try{
+    const p=await getProfile(s.uid);
+    // session invalide si le compte a disparu, est banni, supprimé, ou si le hash a changé
+    if(!p || p.banned || p.deletedAt || p.hash!==s.hash){ clearSession(); return null; }
+    return p;
+  }catch(e){ return null; } // souci réseau : on ne restaure pas mais on ne casse pas non plus
 }
 async function saveProfile(pf){ await pgFetch('/profiles?uid=eq.'+pf.uid,{method:'PATCH',body:JSON.stringify({tag:pf.tag,bio:pf.bio,accent:pf.accent,links:pf.links,wallpaper:pf.wallpaper,theme:pf.theme,avatar:pf.avatar,custom_text:pf.customText,opacity:pf.opacity,music:pf.music,effects:pf.effects,cursor_url:pf.cursorUrl,discord_id:pf.discordId})}); }
 async function getProfile(uid){ const r=await pgFetch('/profiles?uid=eq.'+uid+'&select=*'); return r&&r.length?mapRow(r[0]):null; }
@@ -456,8 +534,8 @@ function openUserModal(p, list){
   `, (body)=>{
     body.querySelector('#mSave').onclick=async()=>{
       const fields={};
-      if(canUid){ const nu=parseInt(body.querySelector('#mUid').value,10); if(nu&&nu!==p.uid){ if(list.some(x=>x.uid===nu)){ toast('uid déjà pris','err'); return; } fields.uid=nu; await logAdmin('edit_uid',p,p.uid,nu); } }
-      if(canEdit){ const nn=body.querySelector('#mUser').value.trim(); if(nn&&nn!==p.username){ fields.username=nn; await logAdmin('rename',p,p.username,nn); } fields.tag=body.querySelector('#mTag').value.trim(); fields.bio=body.querySelector('#mBio').value.trim(); }
+      if(canUid){ const nu=parseInt(body.querySelector('#mUid').value,10); if(nu&&nu!==p.uid){ if(!(await isUidAvailable(nu,p.uid))){ toast('uid déjà pris','err'); return; } fields.uid=nu; await logAdmin('edit_uid',p,p.uid,nu); } }
+      if(canEdit){ const nn=body.querySelector('#mUser').value.trim(); if(nn&&nn!==p.username){ if(!(await isUsernameAvailable(nn,p.uid))){ toast('pseudo déjà pris','err'); return; } fields.username=nn; await logAdmin('rename',p,p.username,nn); } fields.tag=body.querySelector('#mTag').value.trim(); fields.bio=body.querySelector('#mBio').value.trim(); }
       if(canRole){ const nr=body.querySelector('#mRole').value; if(nr!==p.role){ fields.role=nr; fields.is_admin=(nr==='admin'||nr==='superadmin'); await logAdmin('set_role',p,p.role,nr); } }
       if(canViews){ const vb=parseInt(body.querySelector('#mViews').value,10)||0; if(vb!==p.viewsBonus){ fields.views_bonus=vb; await logAdmin('set_views_bonus',p,p.viewsBonus,vb); } }
       if(canBadge){ const checked=[...body.querySelectorAll('[data-badge]:checked')].map(c=>c.dataset.badge); fields.badges=checked; if(JSON.stringify(checked)!==JSON.stringify(p.badges)) await logAdmin('set_badges',p,(p.badges||[]).join(','),checked.join(',')); }
@@ -594,7 +672,7 @@ function renderTopbar(){
   if(session){
     acts.append(mk('profil',()=>{view='profile';viewingUid=session.uid;render();}),mk('éditer',()=>{view='edit';render();}),mk('membres',()=>{view='directory';render();}));
     if(isStaffPlus(session)) acts.append(mk('⚡ panel',()=>{view='admin';render();},'admin'));
-    acts.append(mk('quitter',()=>{session=null;view='profile';viewingUid=null;resetVisual();render();}));
+    acts.append(mk('quitter',()=>{session=null;clearSession();view='profile';viewingUid=null;resetVisual();render();}));
   }else{
     acts.append(mk('se connecter',()=>{view='auth';render();}),mk('membres',()=>{view='directory';render();}));
   }
@@ -613,22 +691,34 @@ function profileHTML(p,isOwner){
   const defs=badgeDefsCache||[];
   const badgesHtml=(p.badges||[]).map(bid=>{ const def=defs.find(d=>d.id===bid); if(!def||!def.enabled) return ''; return `<span class="badge rarity-${def.rarity}" data-tip="${esc(def.name)}" style="color:${def.color}">${badgeIconSvg(def.icon)}</span>`; }).filter(Boolean).join('');
   const av=p.avatar?`<img src="${esc(p.avatar)}" alt="">`:(p.username||'?')[0].toUpperCase();
+  const totalViews=(p.views||0)+(p.viewsBonus||0);
+  const linkedAvatar=p.discordAvatar||'';
+  const linkedName=p.discordGlobalName||p.discordUsername||'';
+  // carte Discord : identité OAuth (statique, fiable) + présence Lanyard live si dispo
+  const discordCard=(p.discordId||linkedName)?`<div class="discord-card" id="discordCard">
+      <div class="dav">${linkedAvatar?`<img src="${esc(linkedAvatar)}" alt="">`:''}<div class="dstatus offline"></div></div>
+      <div class="dinfo"><div class="dname">${esc(linkedName||'Discord')}</div><div class="dact">${p.discordId?'chargement...':'compte Discord lié'}</div></div>
+    </div>`:'';
   return `<div class="tiltwrap"><div class="profilebox" id="tiltBox">
-    <div class="avatar">${av}</div>
+    <div class="avatar-wrap">
+      <div class="avatar-ring"><div class="avatar">${av}</div></div>
+      ${badgesHtml?`<div class="badges-crown">${badgesHtml}</div>`:''}
+    </div>
     <div class="identity">
-      <div class="name" id="nameEl">${esc(p.username)}${badgesHtml?`<span class="badges">${badgesHtml}</span>`:''}${isStaffPlus(session)&&isDemo(p)?`<span class="badge-demo">${p.accountType}</span>`:''}<span class="uidtip">uid ${p.uid}</span></div>
+      <div class="name-row"><span class="name" id="nameEl">${esc(p.username)}</span>${isStaffPlus(session)&&isDemo(p)?`<span class="badge-demo">${p.accountType}</span>`:''}</div>
+      <div class="id-row"><span class="uid-chip" id="uidChip" title="copier l'UID">UID ${p.uid}</span><span class="tag">${esc(p.tag)}</span></div>
       <div class="status"><span class="dot"></span>en ligne</div>
-      <div class="tag">${esc(p.tag)}</div>
       ${p.bio?`<p class="bio" id="bioEl" data-full="${esc(p.bio)}"></p>`:''}
+      <div class="stat-row"><span class="stat-pill">👁 <b id="viewCount">${totalViews}</b> vues</span></div>
     </div>
     ${p.music?'<div id="vinylMount"></div>':''}
     ${socialHtml?`<div class="social-inline">${socialHtml}</div>`:''}
-    ${p.discordId?`<div class="discord-card" id="discordCard"><div class="dav"><div class="dstatus offline"></div></div><div class="dinfo"><div class="dname">Discord</div><div class="dact">chargement...</div></div></div>`:''}
+    ${discordCard}
     ${p.customText?`<div class="customtext">${esc(p.customText)}</div>`:''}
     ${buttonHtml?`<div class="links">${buttonHtml}</div>`:''}
     ${isOwner?'<button class="btn ghost small" id="editBtn">✎ éditer mon profil</button>':''}
     <button class="sharebtn" id="shareBtn">🔗 copier le lien de ce profil</button>
-    <footer><span class="views">👁 <span id="viewCount">${(p.views||0)+(p.viewsBonus||0)}</span> vues</span> · uid ${p.uid} · xdez</footer>
+    <footer>uid ${p.uid} · xdez</footer>
   </div></div>`;
 }
 
@@ -652,7 +742,7 @@ async function render(){
         if(!u||!p){ formError='Remplis les deux champs.'; return render(); }
         formError=''; document.getElementById('as').textContent='...';
         const res=mode==='login'?await login(u,p):await createAccount(u,p);
-        if(res.ok){ session=res.profile; view='profile'; viewingUid=session.uid; render(); }
+        if(res.ok){ session=res.profile; saveSession(session); view='profile'; viewingUid=session.uid; render(); }
         else{ formError=res.error; render(); }
       };
     };
@@ -667,6 +757,7 @@ async function render(){
     app.innerHTML=`<div class="panel">
       <h2>Personnaliser</h2>
       <div class="field"><label>photo de profil (url image)</label><input id="eAv" placeholder="https://... (vide = initiale)" value="${esc(p.avatar)}"></div>
+      <div class="field"><label>pseudo (identifiant unique)</label><input id="eUser" value="${esc(p.username)}" autocomplete="off"><p class="hint" id="eUserHint">Ton identifiant de connexion. Change-le quand tu veux.</p></div>
       <div class="field"><label>tag affiché</label><input id="eTag" value="${esc(p.tag)}"></div>
       <div class="field"><label>bio courte</label><textarea id="eBio">${esc(p.bio)}</textarea></div>
       <div class="field"><label>texte libre (sous le profil)</label><textarea id="eCustom" placeholder="Écris ce que tu veux ici...">${esc(p.customText)}</textarea></div>
@@ -680,8 +771,10 @@ async function render(){
       <div class="field"><label>cover du disque (url image, vide = ta photo de profil)</label><input id="eMusicCover" placeholder="https://... (vide = avatar)" value="${esc((p.effects&&p.effects.musicCover)||'')}"></div>
       <div class="field"><label>titre affiché (optionnel, auto-détecté si vide pour YouTube)</label><input id="eMusicTitle" placeholder="Nom de la musique" value="${esc((p.effects&&p.effects.musicTitle)||'')}"></div>
       <div class="field"><label>curseur perso (url image .png/.cur)</label><input id="eCursor" placeholder="https://... (vide = normal)" value="${esc(p.cursorUrl)}"></div>
-      <div class="field"><label>discord id (statut en direct via Lanyard)</label><input id="eDiscord" placeholder="ton ID Discord (17-19 chiffres)" value="${esc(p.discordId)}"></div>
-      <p class="hint">Pour le statut Discord : rejoins le serveur <b>Lanyard</b> (discord.gg/lanyard) avec ton compte, sinon le statut ne s'affichera pas. Ton ID s'obtient en activant le mode développeur Discord puis clic droit sur ton profil → Copier l'identifiant.</p>
+      <h3>Discord</h3>
+      <div id="discordLinkBox"></div>
+      <div class="field"><label>discord id (statut en direct via Lanyard — optionnel)</label><input id="eDiscord" placeholder="ton ID Discord (17-19 chiffres)" value="${esc(p.discordId)}"></div>
+      <p class="hint">Le bouton ci-dessus lie ton compte via OAuth (avatar + pseudo, fiable). Le <b>statut en ligne/hors ligne</b> n'est pas fourni par OAuth : pour l'afficher en direct, rejoins le serveur <b>Lanyard</b> (discord.gg/lanyard) et colle ton ID ici. Sans ça, seule l'identité liée s'affiche.</p>
       <h3>Effets</h3>
       <div class="chooser" id="effectsChooser"></div>
       <h3>Thème</h3><div class="themegrid" id="themeGrid"></div>
@@ -754,8 +847,24 @@ async function render(){
     Object.keys(PLATFORMS).forEach(id=>{ const plat=PLATFORMS[id]; const chip=document.createElement('div'); chip.className='chip'; chip.innerHTML=`<span class="ico" style="color:${plat.color}">${iconFor(id)}</span>${plat.name}`;
       chip.onclick=()=>{ wl.push({platform:id,raw:'',label:plat.name}); drawLinks(); const inp=le.lastChild.querySelector('input'); if(inp) inp.focus(); }; pc.appendChild(chip); });
 
-    document.getElementById('eAv').oninput=()=>{}; 
+    document.getElementById('eAv').oninput=()=>{};
     document.getElementById('eWall').oninput=previewBg;
+    // pseudo : disponibilité en direct (exclut TON compte → plus de faux "déjà pris")
+    const eUser=document.getElementById('eUser'), eUserHint=document.getElementById('eUserHint');
+    let userCheckTimer=null;
+    eUser.oninput=()=>{
+      const v=eUser.value.trim(); eUserHint.style.color='';
+      if(v===p.username){ eUserHint.textContent='Ton pseudo actuel.'; return; }
+      if(v.length<2){ eUserHint.textContent='2 caractères minimum.'; eUserHint.style.color='#e08a7e'; return; }
+      eUserHint.textContent='vérification...';
+      clearTimeout(userCheckTimer);
+      userCheckTimer=setTimeout(async()=>{
+        try{ const ok=await isUsernameAvailable(v,p.uid); eUserHint.textContent=ok?'✓ disponible':'✗ déjà pris'; eUserHint.style.color=ok?'#5ec98f':'#e08a7e'; }
+        catch(e){ eUserHint.textContent=''; }
+      },350);
+    };
+    // Discord : boîte de liaison OAuth
+    renderDiscordLinkBox(p);
     document.getElementById('previewBtn').onclick=()=>{
       // construire un profil temporaire depuis les champs et l'afficher sans sauvegarder
       const tmp={...p, avatar:document.getElementById('eAv').value.trim(), tag:document.getElementById('eTag').value.trim()||p.tag, bio:document.getElementById('eBio').value.trim(), customText:document.getElementById('eCustom').value, wallpaper:document.getElementById('eWall').value.trim(), music:document.getElementById('eMusic').value.trim(), cursorUrl:document.getElementById('eCursor').value.trim(), discordId:document.getElementById('eDiscord').value.trim(), theme:selTheme, accent:selAccent, opacity:op, effects:collectFx(), links:wl.filter(l=>(l.raw||'').trim()).map(l=>({platform:l.platform,label:(PLATFORMS[l.platform]||PLATFORMS.link).name,raw:l.raw,url:normalizeUrl(l.platform,l.raw)}))};
@@ -763,6 +872,14 @@ async function render(){
     };
     document.getElementById('cancelBtn').onclick=()=>{ view='profile'; viewingUid=session.uid; render(); };
     document.getElementById('saveBtn').onclick=async()=>{
+      const newUser=document.getElementById('eUser').value.trim();
+      if(newUser && newUser!==p.username){
+        if(newUser.length<2){ formError='Pseudo trop court (2 caractères min).'; return render(); }
+        document.getElementById('saveBtn').textContent='...';
+        if(!(await isUsernameAvailable(newUser,p.uid))){ formError='Ce pseudo est déjà pris.'; return render(); }
+        try{ await pgFetch('/profiles?uid=eq.'+p.uid,{method:'PATCH',body:JSON.stringify({username:newUser})}); p.username=newUser; }
+        catch(e){ formError='Impossible de changer le pseudo (déjà pris ?).'; return render(); }
+      }
       p.avatar=document.getElementById('eAv').value.trim();
       p.tag=document.getElementById('eTag').value.trim()||p.tag;
       p.bio=document.getElementById('eBio').value.trim();
@@ -946,7 +1063,6 @@ async function render(){
     startParticles(p.effects.particles,p.accent); applyCursor(p.cursorUrl); setupTilt();
     setupMusic(p);
     if(p.discordId) loadDiscord(p.discordId);
-    const nameEl=document.getElementById('nameEl'); if(nameEl) nameEl.onclick=()=>{ nameEl.classList.toggle('show'); setTimeout(()=>nameEl.classList.remove('show'),1600); };
     const sb=document.getElementById('shareBtn'); if(sb) sb.style.display='none';
     return;
   }
@@ -980,8 +1096,8 @@ async function render(){
   const isOwner=session&&session.uid===p.uid;
   app.className='card'; app.innerHTML=profileHTML(p,isOwner);
   if(isOwner) document.getElementById('editBtn').onclick=()=>{view='edit';render();};
-  const nameEl=document.getElementById('nameEl');
-  nameEl.onclick=()=>{ nameEl.classList.toggle('show'); setTimeout(()=>nameEl.classList.remove('show'),1600); };
+  const uidChip=document.getElementById('uidChip');
+  if(uidChip) uidChip.onclick=()=>{ navigator.clipboard.writeText(String(p.uid)).then(()=>toast('UID copié','ok')).catch(()=>{}); };
   document.getElementById('shareBtn').onclick=()=>{
     const shareUrl=location.origin+location.pathname+'?uid='+p.uid;
     navigator.clipboard.writeText(shareUrl).then(()=>{ const b=document.getElementById('shareBtn'); b.textContent='✓ lien copié !'; setTimeout(()=>b.textContent='🔗 copier le lien de ce profil',1800); }).catch(()=>{ prompt('Copie ce lien :',shareUrl); });
@@ -1019,6 +1135,59 @@ function setupTilt(){
 function applyCursor(url){
   if(url){ document.body.style.cursor='url("'+url+'"), auto'; }
   else { document.body.style.cursor=''; }
+}
+// ===== Discord OAuth (via le provider Supabase) =====
+// L'échange du code se fait côté serveur par Supabase (secret jamais exposé).
+// Prérequis : activer Discord dans Dashboard → Authentication → Providers,
+// et ajouter l'URL du site dans les "Redirect URLs".
+function startDiscordLink(){
+  if(!session){ toast("Connecte-toi d'abord",'err'); return; }
+  try{ localStorage.setItem('xdez_discord_return',JSON.stringify({uid:session.uid})); }catch(e){}
+  const redirect=location.origin+location.pathname;
+  location.href=SUPABASE_URL+'/auth/v1/authorize?provider=discord&redirect_to='+encodeURIComponent(redirect);
+}
+async function handleDiscordCallback(){
+  if(!location.hash || location.hash.indexOf('access_token')<0) return false;
+  const params=new URLSearchParams(location.hash.slice(1));
+  const at=params.get('access_token');
+  history.replaceState(null,'',location.pathname+location.search); // nettoie l'URL immédiatement
+  if(!at) return false;
+  let ret={}; try{ ret=JSON.parse(localStorage.getItem('xdez_discord_return')||'{}'); }catch(e){}
+  localStorage.removeItem('xdez_discord_return');
+  try{
+    const res=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+at}});
+    const u=await res.json();
+    const m=u.user_metadata||{};
+    const discordId=m.provider_id||m.sub||(u.identities&&u.identities[0]&&u.identities[0].id)||'';
+    const globalName=(m.custom_claims&&m.custom_claims.global_name)||'';
+    const username=m.full_name||m.name||m.user_name||m.preferred_username||'';
+    const avatar=m.avatar_url||m.picture||'';
+    if(ret.uid && discordId){
+      await pgFetch('/profiles?uid=eq.'+ret.uid,{method:'PATCH',body:JSON.stringify({discord_id:discordId,discord_username:username,discord_global_name:globalName||username,discord_avatar:avatar})});
+      toast('Compte Discord lié ✓','ok');
+    } else { toast('Liaison Discord incomplète','err'); }
+  }catch(e){ toast('Liaison Discord échouée','err'); }
+  return true;
+}
+function renderDiscordLinkBox(p){
+  const box=document.getElementById('discordLinkBox'); if(!box) return;
+  const name=p.discordGlobalName||p.discordUsername||'';
+  if(name||p.discordAvatar){
+    box.innerHTML=`<div class="discord-card" style="margin-bottom:8px;">
+      <div class="dav">${p.discordAvatar?`<img src="${esc(p.discordAvatar)}" alt="">`:''}</div>
+      <div class="dinfo"><div class="dname">${esc(name||'Discord lié')}</div><div class="dact">compte Discord lié</div></div></div>
+    <div class="row"><button class="btn-discord" id="dcResync">${ICONS.discord} Resynchroniser</button><button class="btn ghost" id="dcUnlink">Délier</button></div>`;
+    box.querySelector('#dcResync').onclick=()=>startDiscordLink();
+    box.querySelector('#dcUnlink').onclick=async()=>{
+      try{ await pgFetch('/profiles?uid=eq.'+p.uid,{method:'PATCH',body:JSON.stringify({discord_id:'',discord_username:'',discord_global_name:'',discord_avatar:''})}); }catch(e){}
+      p.discordId='';p.discordUsername='';p.discordGlobalName='';p.discordAvatar='';
+      const dEl=document.getElementById('eDiscord'); if(dEl) dEl.value='';
+      toast('Discord délié','ok'); renderDiscordLinkBox(p);
+    };
+  } else {
+    box.innerHTML=`<button class="btn-discord" id="dcLink">${ICONS.discord} Se connecter avec Discord</button>`;
+    box.querySelector('#dcLink').onclick=()=>startDiscordLink();
+  }
 }
 async function loadDiscord(id){
   const card=document.getElementById('discordCard'); if(!card) return;
@@ -1162,7 +1331,14 @@ function showSplash(username, cb){
 }
 
 (async function(){
+  // 1) retour d'un login OAuth Discord (tokens dans le hash) → lier au profil
+  await handleDiscordCallback();
+  // 2) restaurer la session persistée (corrige la déconnexion au refresh)
+  const restored=await restoreSession();
+  if(restored) session=restored;
+  // 3) déterminer la vue initiale
   viewingUid=getUrlUid(); view='profile';
+  if(!viewingUid && session) viewingUid=session.uid;
   // splash uniquement si on arrive directement sur un profil partagé
   if(viewingUid){
     try{ const pre=await getProfile(viewingUid); if(pre && !pre.banned && pre.effects && pre.effects.splash){ showSplash(pre.username); } }catch(e){}
