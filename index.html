@@ -371,6 +371,41 @@
   .loader-dots i:nth-child(2){ animation-delay:.15s; } .loader-dots i:nth-child(3){ animation-delay:.3s; }
   @keyframes ld{ 0%,100%{opacity:.25; transform:translateY(0);} 50%{opacity:1; transform:translateY(-4px);} }
   @media (prefers-reduced-motion:reduce){ .loader-dots i{ animation:none; opacity:.6; } }
+  /* ===== xvy features ===== */
+  .ach-strip{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:6px; }
+  .ach-pill{ font-size:15px; cursor:default; filter:grayscale(0); transition:transform .15s; }
+  .ach-pill:hover{ transform:scale(1.25); }
+  .xvy-block{ width:100%; text-align:left; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px; }
+  .xvy-block h4{ font-size:12px; font-family:'JetBrains Mono',monospace; color:var(--text-dim); text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px; }
+  .gb-item{ padding:8px 10px; border-radius:10px; background:rgba(255,255,255,.04); margin-bottom:6px; }
+  .gb-item .gb-head{ display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--text-dim); font-family:'JetBrains Mono',monospace; margin-bottom:3px; }
+  .gb-item .gb-msg{ font-size:13px; word-break:break-word; }
+  .gb-del{ cursor:pointer; opacity:.6; } .gb-del:hover{ opacity:1; color:#e08a7e; }
+  .gb-form{ display:flex; gap:6px; margin-top:8px; }
+  .gb-form input{ flex:1; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:9px 11px; color:var(--text); font-size:13px; outline:none; }
+  .gb-form input:focus{ border-color:var(--accent); }
+  .poll-opt{ display:block; width:100%; text-align:left; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:9px 12px; color:var(--text); font-size:13px; cursor:pointer; margin-bottom:6px; position:relative; overflow:hidden; }
+  .poll-opt:hover{ border-color:var(--accent); }
+  .poll-opt .fillbar{ position:absolute; inset:0; background:var(--accent); opacity:.18; transform-origin:left; }
+  .poll-opt .row-in{ position:relative; display:flex; justify-content:space-between; }
+  .game-btns{ display:flex; gap:8px; flex-wrap:wrap; }
+  .game-btn{ flex:1; min-width:110px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px; color:var(--text); cursor:pointer; font-size:13px; transition:all .15s; }
+  .game-btn:hover{ border-color:var(--accent); transform:translateY(-1px); }
+  .lb-row{ display:flex; justify-content:space-between; font-size:12px; font-family:'JetBrains Mono',monospace; color:var(--text-dim); padding:3px 2px; }
+  .lb-row b{ color:var(--text); font-weight:500; }
+  .lb-row.me{ color:var(--accent); }
+  .game-arena{ height:210px; border-radius:14px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; cursor:pointer; user-select:none; font-size:15px; text-align:center; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); transition:background .1s; }
+  .game-arena.wait{ background:rgba(224,110,94,.25); } .game-arena.go{ background:rgba(94,201,143,.3); }
+  .game-arena .big{ font-size:34px; font-weight:700; font-family:'Space Grotesk',sans-serif; }
+  .secret-box{ text-align:center; }
+  .secret-box input{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:9px 11px; color:var(--text); font-size:13px; outline:none; text-align:center; }
+  .statbar-wrap{ display:flex; align-items:flex-end; gap:3px; height:90px; margin:8px 0 2px; }
+  .statbar{ flex:1; background:var(--accent); opacity:.75; border-radius:3px 3px 0 0; min-height:2px; position:relative; }
+  .statbar:hover{ opacity:1; }
+  .statbar .tip{ position:absolute; bottom:100%; left:50%; transform:translateX(-50%); font-size:9px; font-family:'JetBrains Mono',monospace; color:var(--text-dim); white-space:nowrap; margin-bottom:2px; }
+  .statbar-labels{ display:flex; gap:3px; } .statbar-labels span{ flex:1; text-align:center; font-size:8px; color:var(--text-dim); font-family:'JetBrains Mono',monospace; }
+  .presence-live{ animation:pulseLive 2s ease-in-out infinite; }
+  @keyframes pulseLive{ 0%,100%{opacity:1;} 50%{opacity:.55;} }
 </style>
 </head>
 <body class="no-wall theme-glass">
@@ -541,7 +576,7 @@ async function uploadBgVideo(file,uid){
   return SUPABASE_URL+'/storage/v1/object/public/backgrounds/'+path+'?v='+Date.now();
 }
 async function sha256(s){ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)); return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''); }
-function mapRow(r){ return {uid:r.uid,username:r.username,hash:r.password_hash,tag:r.tag,bio:r.bio,accent:r.accent,links:r.links||[],wallpaper:r.wallpaper||'',theme:r.theme||'glass',avatar:r.avatar||'',customText:r.custom_text||'',opacity:{...DEFAULT_OP,...(r.opacity||{})},isAdmin:!!r.is_admin,banned:!!r.banned,music:r.music||'',views:r.views||0,viewsBonus:r.views_bonus||0,effects:{...DEFAULT_EFFECTS,...(r.effects||{})},badges:r.badges||[],cursorUrl:r.cursor_url||'',discordId:r.discord_id||'',discordUsername:r.discord_username||'',discordGlobalName:r.discord_global_name||'',discordAvatar:r.discord_avatar||'',role:r.role||'user',staffNote:r.staff_note||'',deletedAt:r.deleted_at||null,accountType:r.account_type||'real',excludeFromStats:!!r.exclude_from_stats,seedBatch:r.seed_batch||null,createdByUid:r.created_by_uid||null,likes:r.likes||0}; }
+function mapRow(r){ return {uid:r.uid,username:r.username,hash:r.password_hash,tag:r.tag,bio:r.bio,accent:r.accent,links:r.links||[],wallpaper:r.wallpaper||'',theme:r.theme||'glass',avatar:r.avatar||'',customText:r.custom_text||'',opacity:{...DEFAULT_OP,...(r.opacity||{})},isAdmin:!!r.is_admin,banned:!!r.banned,music:r.music||'',views:r.views||0,viewsBonus:r.views_bonus||0,effects:{...DEFAULT_EFFECTS,...(r.effects||{})},badges:r.badges||[],cursorUrl:r.cursor_url||'',discordId:r.discord_id||'',discordUsername:r.discord_username||'',discordGlobalName:r.discord_global_name||'',discordAvatar:r.discord_avatar||'',role:r.role||'user',staffNote:r.staff_note||'',deletedAt:r.deleted_at||null,accountType:r.account_type||'real',excludeFromStats:!!r.exclude_from_stats,seedBatch:r.seed_batch||null,createdByUid:r.created_by_uid||null,likes:r.likes||0,achievements:r.achievements||[],poll:r.poll||null,secret:r.secret||null}; }
 function isDemo(p){ return p && p.accountType && p.accountType!=='real'; }
 
 // ===== disponibilité pseudo / uid (correction du faux "déjà pris") =====
@@ -596,7 +631,7 @@ async function restoreSession(){
     return p;
   }catch(e){ return null; } // souci réseau : on ne restaure pas mais on ne casse pas non plus
 }
-async function saveProfile(pf){ await pgFetch('/profiles?uid=eq.'+pf.uid,{method:'PATCH',body:JSON.stringify({tag:pf.tag,bio:pf.bio,accent:pf.accent,links:pf.links,wallpaper:pf.wallpaper,theme:pf.theme,avatar:pf.avatar,custom_text:pf.customText,opacity:pf.opacity,music:pf.music,effects:pf.effects,cursor_url:pf.cursorUrl,discord_id:pf.discordId})}); }
+async function saveProfile(pf){ await pgFetch('/profiles?uid=eq.'+pf.uid,{method:'PATCH',body:JSON.stringify({tag:pf.tag,bio:pf.bio,accent:pf.accent,links:pf.links,wallpaper:pf.wallpaper,theme:pf.theme,avatar:pf.avatar,custom_text:pf.customText,opacity:pf.opacity,music:pf.music,effects:pf.effects,cursor_url:pf.cursorUrl,discord_id:pf.discordId,poll:pf.poll,secret:pf.secret})}); }
 async function getProfile(uid){ const r=await pgFetch('/profiles?uid=eq.'+uid+'&select=*'); return r&&r.length?mapRow(r[0]):null; }
 async function listDirectory(){ const r=await pgFetch('/profiles?deleted_at=is.null&select=*&order=uid.asc'); return (r||[]).map(mapRow); }
 async function logAdmin(action, target, oldVal, newVal){
@@ -702,7 +737,7 @@ function freshDraft(p){
   };
 }
 function sidebarHTML(active){
-  const tabs=[['overview','Aperçu'],['customize','Personnaliser'],['links','Liens'],['effects','Effets']];
+  const tabs=[['overview','Aperçu'],['customize','Personnaliser'],['links','Liens'],['effects','Effets'],['stats','Statistiques']];
   return `<div class="dash-side">
     <div class="dash-logo">🔫 xvy</div>
     <div class="dash-search"><input placeholder="Rechercher des fonctions..." disabled></div>
@@ -783,7 +818,33 @@ const I18N={
   'note interne...':'internal note...','ou lien .mp4 direct':'or direct .mp4 link',
   'lien YouTube ou .mp3 direct':'YouTube or direct .mp3 link','https://... (vide = normal)':'https://... (empty = normal)',
   'Nom de la musique':'Music name','🔍 rechercher un membre...':'🔍 search a member...',
-  'Rechercher des fonctions...':'Search features...','note interne':'internal note'
+  'Rechercher des fonctions...':'Search features...','note interne':'internal note',
+  // features xvy
+  'Statistiques':'Stats','Vues par jour':'Views per day','Clics par lien':'Clicks per link',
+  'Top fans (visiteurs connectés)':'Top fans (signed-in visitors)','Mini-jeux — meilleurs scores':'Mini-games — best scores',
+  'Succès':'Achievements','Vues (14 j)':'Views (14 d)','Clics de liens (14 j)':'Link clicks (14 d)',
+  '📊 Sondage sur ton profil':'📊 Poll on your profile','Question':'Question',
+  'Options (une par ligne, 2 à 6)':'Options (one per line, 2 to 6)',
+  'Enregistrer le sondage':'Save poll','Nouveau sondage (remet les votes à zéro)':'New poll (resets votes)',
+  'Sondage enregistré ✓':'Poll saved ✓','Sondage désactivé':'Poll disabled','Vote enregistré ✓':'Vote recorded ✓',
+  '🔒 Contenu secret':'🔒 Secret content','🔓 Contenu secret':'🔓 Secret content',
+  'Contenu à révéler':'Content to reveal','Mot de passe':'Password','Indice affiché (optionnel)':'Displayed hint (optional)',
+  'Enregistrer le secret':'Save secret','Secret enregistré ✓':'Secret saved ✓','Secret désactivé':'Secret disabled',
+  'Débloquer':'Unlock','Mauvais mot de passe':'Wrong password','🔓 Contenu débloqué !':'🔓 Content unlocked!',
+  'Trouve le mot de passe pour débloquer.':'Find the password to unlock.',
+  '🎮 Mini-jeux — bats le meilleur score':'🎮 Mini-games — beat the best score',
+  'Clique pour démarrer':'Click to start','Attends…':'Wait…','CLIQUE !':'CLICK!','Trop tôt 😅':'Too soon 😅',
+  'clique pour réessayer':'click to retry','clique pour rejouer':'click to replay',
+  'attends le vert, puis clique le plus vite possible':'wait for green, then click as fast as you can',
+  'clique le plus vite possible pendant 5 s':'click as fast as you can for 5 s',
+  'aucun score — sois le premier !':'no score yet — be the first!',
+  "Livre d'or actif":'Active guestbook','laisse un message...':'leave a message...','Envoyer':'Send',
+  'Message publié ✓':'Message posted ✓',"connecte-toi pour signer le livre d'or":'sign in to sign the guestbook',
+  'aucun message — laisse le premier !':'no messages — leave the first one!',
+  'Succès débloqué :':'Achievement unlocked:','Chargement…':'Loading…',
+  "Aucun clic enregistré pour l'instant.":'No clicks recorded yet.',
+  'Pas encore de visiteurs connectés.':'No signed-in visitors yet.',
+  'mot de passe':'password','vote':'vote','votes':'votes','en ce moment':'right now'
 };
 function tr(s){ if(LANG!=='en'||s==null) return s; const k=(''+s).trim(); const e=I18N[k]; return e!==undefined?(''+s).replace(k,e):s; }
 function applyLang(root){
@@ -951,7 +1012,39 @@ function mountOverviewTab(el,p,d){
       <p class="hint" style="margin-bottom:10px;">Connecte ton compte Discord à xvy.</p>
       <div id="discordLinkBox"></div>
     </div>
+    <div class="dash-card">
+      <h3>📊 Sondage sur ton profil</h3>
+      <p class="hint" style="margin-bottom:10px;">Pose une question à tes visiteurs. Laisse vide pour désactiver.</p>
+      <div class="field"><label>Question</label><input id="pollQ" maxlength="120" value="${esc((p.poll&&p.poll.q)||'')}" placeholder="ex: quel jeu je stream ce soir ?"></div>
+      <div class="field"><label>Options (une par ligne, 2 à 6)</label><textarea id="pollOpts" rows="4" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:9px 11px;color:var(--text);font-size:13px;outline:none;resize:vertical;">${esc(((p.poll&&p.poll.opts)||[]).join('\n'))}</textarea></div>
+      <div class="row"><button class="btn small" id="pollSave">Enregistrer le sondage</button><button class="btn ghost small" id="pollReset">Nouveau sondage (remet les votes à zéro)</button></div>
+    </div>
+    <div class="dash-card">
+      <h3>🔒 Contenu secret</h3>
+      <p class="hint" style="margin-bottom:10px;">Un bloc caché sur ton profil, déblocable avec un mot de passe. Laisse vide pour désactiver.</p>
+      <div class="field"><label>Contenu à révéler</label><textarea id="secretText" rows="3" maxlength="500" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:9px 11px;color:var(--text);font-size:13px;outline:none;resize:vertical;">${esc((p.secret&&p.secret.text)||'')}</textarea></div>
+      <div class="field"><label>Mot de passe</label><input id="secretPwEdit" maxlength="60" value="${esc((p.secret&&p.secret.pw)||'')}" placeholder="ex: le nom de mon chat"></div>
+      <div class="field"><label>Indice affiché (optionnel)</label><input id="secretHint" maxlength="120" value="${esc((p.secret&&p.secret.hint)||'')}" placeholder="ex: mon premier pseudo…"></div>
+      <div class="row"><button class="btn small" id="secretSave">Enregistrer le secret</button></div>
+    </div>
   `;
+  const savePoll=async(newId)=>{
+    const q=(document.getElementById('pollQ').value||'').trim();
+    const opts=(document.getElementById('pollOpts').value||'').split('\n').map(s=>s.trim()).filter(Boolean).slice(0,6);
+    const poll=(q&&opts.length>=2)?{id:newId||((p.poll&&p.poll.id)||'p1'),q,opts}:null;
+    try{ await pgFetch('/profiles?uid=eq.'+p.uid,{method:'PATCH',body:JSON.stringify({poll})}); p.poll=poll; if(session&&session.uid===p.uid) session.poll=poll; toast(poll?'Sondage enregistré ✓':'Sondage désactivé','ok'); }
+    catch(e){ toast('Erreur de sauvegarde.','err'); }
+  };
+  document.getElementById('pollSave').onclick=()=>savePoll();
+  document.getElementById('pollReset').onclick=()=>savePoll('p'+Date.now().toString(36));
+  document.getElementById('secretSave').onclick=async()=>{
+    const text=(document.getElementById('secretText').value||'').trim();
+    const pw=(document.getElementById('secretPwEdit').value||'').trim();
+    const hint=(document.getElementById('secretHint').value||'').trim();
+    const secret=(text&&pw)?{text,pw,hint}:null;
+    try{ await pgFetch('/profiles?uid=eq.'+p.uid,{method:'PATCH',body:JSON.stringify({secret})}); p.secret=secret; if(session&&session.uid===p.uid) session.secret=secret; toast(secret?'Secret enregistré ✓':'Secret désactivé','ok'); }
+    catch(e){ toast('Erreur de sauvegarde.','err'); }
+  };
   document.getElementById('chUser').onclick=()=>{
     openModal('Changer de nom d’utilisateur',
       `<div class="field"><label>nouveau pseudo</label><input id="mUser" value="${esc(p.username)}" autocomplete="off"></div><p class="hint" id="mUserHint">Ton identifiant de connexion.</p><div class="row"><button class="btn" id="mUserSave">Enregistrer</button></div>`,
@@ -1195,7 +1288,8 @@ function profileHTML(p,isOwner){
       <div class="id-row"><span class="uid-chip" id="uidChip" title="copier l'UID">UID ${p.uid}</span><span class="tag">${esc(p.tag)}</span></div>
       ${badgesHtml?`<div class="badge-strip">${badgesHtml}</div>`:''}
       ${p.bio?`<p class="bio" id="bioEl" data-full="${esc(p.bio)}"></p>`:''}
-      ${p.effects.hideViews?'':`<div class="stat-row"><span class="stat-pill">👁 <b id="viewCount">${totalViews}</b> vues</span></div>`}
+      <div class="stat-row">${p.effects.hideViews?'':`<span class="stat-pill">👁 <b id="viewCount">${totalViews}</b> vues</span>`}<span class="stat-pill presence-live" id="presencePill" style="display:none;"></span></div>
+      ${achievementsStripHTML(p)}
     </div>
     ${p.music?'<div id="vinylMount"></div>':''}
     ${socialHtml?`<div class="social-inline">${socialHtml}</div>`:''}
@@ -1203,6 +1297,10 @@ function profileHTML(p,isOwner){
     ${p.customText?`<div class="customtext">${esc(p.customText)}</div>`:''}
     ${buttonHtml?`<div class="links">${buttonHtml}</div>`:''}
     <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:2px;">${likeBtnHTML(p)}</div>
+    <div id="pollBlock"></div>
+    <div id="secretBlock"></div>
+    <div id="gameBlock"></div>
+    <div id="guestbookBlock"></div>
     ${isOwner?'<button class="btn ghost small" id="editBtn">✎ éditer mon profil</button>':''}
     <button class="sharebtn" id="shareBtn">🔗 copier le lien de ce profil</button>
     <footer>uid ${p.uid} · xvy</footer>
@@ -1262,6 +1360,7 @@ async function render(){
     if(editTab==='overview') mountOverviewTab(contentEl,p,d);
     else if(editTab==='links') mountLinksTab(contentEl,p,d);
     else if(editTab==='effects') mountEffectsTab(contentEl,p,d);
+    else if(editTab==='stats') mountStatsTab(contentEl,p);
     else mountCustomizeTab(contentEl,p,d);
     return;
   }
@@ -1506,19 +1605,318 @@ async function render(){
   startParticles(p.effects.particles, p.accent);
   // music
   setupMusic(p);
-  // views: incrémenter si ce n'est pas mon propre profil
-  if(!isOwner && !p.excludeFromStats){ incrementViews(p.uid); const nv=(p.views||0)+(p.viewsBonus||0)+1; const vc=document.getElementById('viewCount'); if(vc) vc.textContent=nv; }
+  // views: incrémenter si ce n'est pas mon propre profil, max 1 vue / navigateur / profil / 30 min
+  // (évite qu'un simple rafraîchissement compte une nouvelle vue)
+  if(!isOwner && !p.excludeFromStats && viewCooldownOk(p.uid)){
+    incrementViews(p.uid); markViewed(p.uid);
+    const nv=(p.views||0)+(p.viewsBonus||0)+1; const vc=document.getElementById('viewCount'); if(vc) vc.textContent=nv;
+    trackEvent(p.uid,'view',{viewer_uid:session?session.uid:null,viewer_name:session?session.username:null,ref:document.referrer||''});
+  }
   // curseur personnalisé
   applyCursor(p.cursorUrl);
   // tilt 3D
   setupTilt(p.effects.tilt!==false);
   // discord presence via Lanyard
   if(p.discordId) loadDiscord(p.discordId);
+  // features xvy : présence live, sondage, secret, mini-jeux, livre d'or, succès, tracking clics
+  mountPresence(p);
+  mountPoll(p);
+  mountSecret(p);
+  mountGameBlock(p,isOwner);
+  mountGuestbook(p,isOwner);
+  trackLinkClicks(p,isOwner);
+  if(isOwner) checkAchievements(p);
 }
 
 // Applique la traduction EN après chaque rendu complet (couvre tous les return anticipés)
 const _xvyRender=render;
 render=function(){ const r=_xvyRender.apply(this,arguments); Promise.resolve(r).then(()=>applyLang()).catch(()=>{}); return r; };
+
+// ===== xvy features : anti-refresh vues, analytics, présence live, guestbook, succès, mini-jeux, sondage, secret =====
+const VIEW_COOLDOWN_MS=30*60*1000; // 1 vue max par navigateur / profil / 30 min
+function viewCooldownOk(uid){ try{ const t=parseInt(localStorage.getItem('xvy_seen_'+uid)||'0',10); return (Date.now()-t)>VIEW_COOLDOWN_MS; }catch(e){ return true; } }
+function markViewed(uid){ try{ localStorage.setItem('xvy_seen_'+uid,String(Date.now())); }catch(e){} }
+
+const isMobileDevice=()=>/Android|iPhone|iPad|Mobi/i.test(navigator.userAgent);
+// événement analytics (best-effort, jamais bloquant)
+function trackEvent(profileUid,type,meta){
+  pgFetch('/profile_events',{method:'POST',body:JSON.stringify({profile_uid:profileUid,event_type:type,meta:meta||{},device:isMobileDevice()?'mobile':'desktop'})}).catch(()=>{});
+}
+// clics sur les liens du profil → analytics
+function trackLinkClicks(p,isOwner){
+  if(isOwner) return;
+  document.querySelectorAll('#app .links a, #app .social-inline a').forEach(a=>{
+    a.addEventListener('click',()=>{ const lbl=a.querySelector('.plat'); trackEvent(p.uid,'link_click',{label:(lbl?lbl.textContent:(a.getAttribute('title')||'lien')),url:a.getAttribute('href')||''}); });
+  });
+}
+
+// ----- succès automatiques (achievements) -----
+const ACH_DEFS=[
+  {id:'starter',emo:'🌱',name:'Premiers pas',desc:'Avatar + bio + 1 lien'},
+  {id:'links5',emo:'🔗',name:'Connecté',desc:'5 liens ou plus'},
+  {id:'discord',emo:'💬',name:'Discord lié',desc:'Compte Discord lié'},
+  {id:'v10',emo:'👁',name:'Découvert',desc:'10 vues'},
+  {id:'v100',emo:'🔥',name:'Populaire',desc:'100 vues'},
+  {id:'v1000',emo:'🌟',name:'Star',desc:'1000 vues'},
+  {id:'likes10',emo:'❤️',name:'Aimé',desc:'10 likes'},
+  {id:'gb5',emo:'📖',name:'Livre d\'or actif',desc:'5 messages reçus'},
+  {id:'gamer',emo:'🎮',name:'Joueur',desc:'A joué à un mini-jeu'},
+];
+function achievementsStripHTML(p){
+  const earned=(p.achievements||[]).map(id=>ACH_DEFS.find(a=>a.id===id)).filter(Boolean);
+  if(!earned.length) return '';
+  return `<div class="ach-strip">${earned.map(a=>`<span class="ach-pill" title="${esc(a.name)} — ${esc(a.desc)}">${a.emo}</span>`).join('')}</div>`;
+}
+async function checkAchievements(p){
+  const tv=(p.views||0)+(p.viewsBonus||0);
+  let gbCount=0; try{ const r=await pgFetch('/guestbook?profile_uid=eq.'+p.uid+'&select=id&limit=100'); gbCount=(r||[]).length; }catch(e){}
+  let played=false; try{ const r=await pgFetch('/game_scores?player_uid=eq.'+p.uid+'&select=id&limit=1'); played=(r||[]).length>0; }catch(e){}
+  const tests={
+    starter:!!p.avatar&&!!p.bio&&(p.links||[]).length>=1,
+    links5:(p.links||[]).length>=5,
+    discord:!!(p.discordId||p.discordGlobalName),
+    v10:tv>=10, v100:tv>=100, v1000:tv>=1000,
+    likes10:(p.likes||0)>=10, gb5:gbCount>=5, gamer:played
+  };
+  const have=new Set(p.achievements||[]);
+  const fresh=ACH_DEFS.filter(a=>tests[a.id]&&!have.has(a.id));
+  if(!fresh.length) return;
+  const next=[...have,...fresh.map(a=>a.id)];
+  try{
+    await pgFetch('/profiles?uid=eq.'+p.uid,{method:'PATCH',body:JSON.stringify({achievements:next})});
+    p.achievements=next; if(session&&session.uid===p.uid) session.achievements=next;
+    fresh.forEach((a,i)=>setTimeout(()=>toast(a.emo+' Succès débloqué : '+a.name,'ok'),400+i*900));
+  }catch(e){}
+}
+
+// ----- présence live (Supabase Realtime) -----
+let presenceChannel=null;
+function mountPresence(p){
+  const el=document.getElementById('presencePill'); if(!el) return;
+  const client=getSbAuth(); if(!client) return;
+  if(presenceChannel){ try{ presenceChannel.unsubscribe(); }catch(e){} presenceChannel=null; }
+  const key=session?('u'+session.uid):('a'+Math.random().toString(36).slice(2,10));
+  const ch=client.channel('presence-profile-'+p.uid,{config:{presence:{key}}});
+  presenceChannel=ch;
+  const update=()=>{ try{ const n=Object.keys(ch.presenceState()||{}).length; if(n>0){ el.textContent='👀 '+n+' en ce moment'; el.style.display=''; } else el.style.display='none'; }catch(e){} };
+  ch.on('presence',{event:'sync'},update);
+  ch.subscribe(status=>{ if(status==='SUBSCRIBED') ch.track({t:Date.now()}); });
+}
+
+// ----- sondage sur le profil -----
+async function mountPoll(p){
+  const box=document.getElementById('pollBlock'); if(!box) return;
+  const poll=p.poll; if(!poll||!poll.q||!(poll.opts||[]).length){ box.innerHTML=''; return; }
+  const pollId=poll.id||'p1';
+  let votes=[]; try{ votes=await pgFetch('/poll_votes?profile_uid=eq.'+p.uid+'&poll_id=eq.'+encodeURIComponent(pollId)+'&select=choice&limit=2000')||[]; }catch(e){}
+  const counts=poll.opts.map((_,i)=>votes.filter(v=>v.choice===i).length);
+  const total=counts.reduce((a,b)=>a+b,0);
+  let voted=false; try{ voted=localStorage.getItem('xvy_voted_'+p.uid+'_'+pollId)==='1'; }catch(e){}
+  const showResults=voted;
+  box.innerHTML=`<div class="xvy-block"><h4>📊 ${esc(poll.q)}</h4>
+    ${poll.opts.map((o,i)=>{
+      const pct=total?Math.round(counts[i]/total*100):0;
+      return `<button class="poll-opt" data-i="${i}" ${showResults?'disabled':''}>
+        ${showResults?`<span class="fillbar" style="transform:scaleX(${pct/100});"></span>`:''}
+        <span class="row-in"><span>${esc(o)}</span>${showResults?`<span>${pct}% (${counts[i]})</span>`:''}</span>
+      </button>`;
+    }).join('')}
+    <div class="hint" style="font-size:10px;">${total} vote${total>1?'s':''}</div></div>`;
+  applyLang(box);
+  if(!showResults){
+    box.querySelectorAll('.poll-opt').forEach(b=>{
+      b.onclick=async()=>{
+        const i=parseInt(b.dataset.i,10);
+        try{
+          await pgFetch('/poll_votes',{method:'POST',body:JSON.stringify({profile_uid:p.uid,poll_id:pollId,choice:i})});
+          try{ localStorage.setItem('xvy_voted_'+p.uid+'_'+pollId,'1'); }catch(e){}
+          toast('Vote enregistré ✓','ok'); mountPoll(p);
+        }catch(e){ toast('Erreur, réessaie.','err'); }
+      };
+    });
+  }
+}
+
+// ----- contenu secret déblocable -----
+function mountSecret(p){
+  const box=document.getElementById('secretBlock'); if(!box) return;
+  const s=p.secret; if(!s||!s.text){ box.innerHTML=''; return; }
+  let unlocked=false; try{ unlocked=localStorage.getItem('xvy_secret_'+p.uid)==='1'; }catch(e){}
+  if(unlocked){ box.innerHTML=`<div class="xvy-block secret-box"><h4>🔓 Contenu secret</h4><div style="font-size:13px;white-space:pre-wrap;">${esc(s.text)}</div></div>`; return; }
+  box.innerHTML=`<div class="xvy-block secret-box"><h4>🔒 Contenu secret</h4>
+    <p class="hint" style="margin-bottom:8px;">${s.hint?esc(s.hint):'Trouve le mot de passe pour débloquer.'}</p>
+    <div style="display:flex;gap:6px;justify-content:center;"><input id="secretPw" type="password" placeholder="mot de passe"><button class="btn small" id="secretGo">Débloquer</button></div></div>`;
+  const tryUnlock=()=>{
+    const v=(document.getElementById('secretPw').value||'').trim();
+    if(v && s.pw && v.toLowerCase()===String(s.pw).toLowerCase()){
+      try{ localStorage.setItem('xvy_secret_'+p.uid,'1'); }catch(e){}
+      toast('🔓 Contenu débloqué !','ok'); mountSecret(p);
+    } else toast('Mauvais mot de passe','err');
+  };
+  applyLang(box);
+  document.getElementById('secretGo').onclick=tryUnlock;
+  document.getElementById('secretPw').onkeydown=e=>{ if(e.key==='Enter') tryUnlock(); };
+}
+
+// ----- mini-jeux : reaction test & CPS, leaderboard "bats mon score" -----
+const GAME_DEFS={
+  reaction:{name:'⚡ Réflexe',unit:'ms',better:'asc',fmt:v=>Math.round(v)+' ms'},
+  cps:{name:'🖱️ Clics/s',unit:'cps',better:'desc',fmt:v=>(+v).toFixed(1)+' cps'}
+};
+async function fetchLeaderboard(uid,game){
+  const dir=GAME_DEFS[game].better==='asc'?'score.asc':'score.desc';
+  try{ return await pgFetch('/game_scores?profile_uid=eq.'+uid+'&game=eq.'+game+'&order='+dir+',created_at.asc&limit=5')||[]; }catch(e){ return []; }
+}
+function lbHTML(rows,game){
+  if(!rows.length) return '<div class="hint" style="font-size:11px;">aucun score — sois le premier !</div>';
+  const f=GAME_DEFS[game].fmt;
+  return rows.map((r,i)=>`<div class="lb-row${session&&r.player_uid===session.uid?' me':''}"><span>${['🥇','🥈','🥉','4.','5.'][i]} ${esc(r.player_name)}</span><b>${f(r.score)}</b></div>`).join('');
+}
+async function mountGameBlock(p,isOwner){
+  const box=document.getElementById('gameBlock'); if(!box) return;
+  const [lbR,lbC]=await Promise.all([fetchLeaderboard(p.uid,'reaction'),fetchLeaderboard(p.uid,'cps')]);
+  box.innerHTML=`<div class="xvy-block"><h4>🎮 Mini-jeux — bats le meilleur score</h4>
+    <div class="game-btns">
+      <button class="game-btn" data-game="reaction">${GAME_DEFS.reaction.name}<div id="lbReaction" style="margin-top:6px;">${lbHTML(lbR,'reaction')}</div></button>
+      <button class="game-btn" data-game="cps">${GAME_DEFS.cps.name}<div id="lbCps" style="margin-top:6px;">${lbHTML(lbC,'cps')}</div></button>
+    </div></div>`;
+  box.querySelectorAll('.game-btn').forEach(b=>{ b.onclick=()=>openGame(p,b.dataset.game); });
+  applyLang(box);
+}
+async function saveScore(p,game,score){
+  const name=session?session.username:'anonyme';
+  try{
+    await pgFetch('/game_scores',{method:'POST',body:JSON.stringify({profile_uid:p.uid,player_uid:session?session.uid:null,player_name:name,game,score})});
+    // "bats le créateur" : compare au meilleur score du proprio du profil
+    const rows=await fetchLeaderboard(p.uid,game);
+    const ownerBest=rows.find(r=>r.player_uid===p.uid);
+    const better=GAME_DEFS[game].better==='asc'?(r=>score<+r.score):(r=>score>+r.score);
+    if(ownerBest&&better(ownerBest)&&(!session||session.uid!==p.uid)) toast('🏆 Tu as battu '+p.username+' !','ok');
+    const el=document.getElementById(game==='reaction'?'lbReaction':'lbCps'); if(el) el.innerHTML=lbHTML(rows,game);
+    if(session&&session.uid===p.uid&&!(p.achievements||[]).includes('gamer')) checkAchievements(p);
+  }catch(e){}
+}
+function openGame(p,game){
+  if(game==='reaction'){
+    openModal('⚡ Réflexe — clique dès que c\'est vert',
+      `<div class="game-arena" id="arena"><div class="big">Clique pour démarrer</div><div class="hint">attends le vert, puis clique le plus vite possible</div></div>`,
+      (body)=>{
+        const a=body.querySelector('#arena'); let st='idle', t0=0, timer=null;
+        a.onclick=()=>{
+          if(st==='idle'){ st='wait'; a.className='game-arena wait'; a.innerHTML='<div class="big">Attends…</div>';
+            timer=setTimeout(()=>{ st='go'; a.className='game-arena go'; a.innerHTML='<div class="big">CLIQUE !</div>'; t0=performance.now(); },800+Math.random()*2500);
+          } else if(st==='wait'){ clearTimeout(timer); st='idle'; a.className='game-arena'; a.innerHTML='<div class="big">Trop tôt 😅</div><div class="hint">clique pour réessayer</div>';
+          } else if(st==='go'){ const ms=performance.now()-t0; st='idle'; a.className='game-arena';
+            a.innerHTML='<div class="big">'+Math.round(ms)+' ms</div><div class="hint">clique pour rejouer</div>';
+            saveScore(p,'reaction',Math.round(ms));
+          }
+        };
+      });
+  } else {
+    openModal('🖱️ Clics par seconde — 5 secondes',
+      `<div class="game-arena" id="arena"><div class="big">Clique pour démarrer</div><div class="hint">clique le plus vite possible pendant 5 s</div></div>`,
+      (body)=>{
+        const a=body.querySelector('#arena'); let running=false, clicks=0, tEnd=0, raf=null;
+        a.onclick=()=>{
+          if(!running){ running=true; clicks=0; tEnd=performance.now()+5000;
+            const tick=()=>{ const left=tEnd-performance.now();
+              if(left<=0){ running=false; cancelAnimationFrame(raf); const cps=+(clicks/5).toFixed(1);
+                a.innerHTML='<div class="big">'+cps+' cps</div><div class="hint">'+clicks+' clics — clique pour rejouer</div>';
+                saveScore(p,'cps',cps); return; }
+              a.innerHTML='<div class="big">'+clicks+'</div><div class="hint">'+(left/1000).toFixed(1)+' s restantes</div>';
+              raf=requestAnimationFrame(tick); };
+            raf=requestAnimationFrame(tick);
+          } else clicks++;
+        };
+      });
+  }
+}
+
+// ----- livre d'or (guestbook) -----
+async function mountGuestbook(p,isOwner){
+  const box=document.getElementById('guestbookBlock'); if(!box) return;
+  let rows=[]; try{ rows=await pgFetch('/guestbook?profile_uid=eq.'+p.uid+'&order=created_at.desc&limit=30')||[]; }catch(e){}
+  const items=rows.map(r=>`<div class="gb-item" data-id="${r.id}">
+      <div class="gb-head"><span>${esc(r.author_name)} · ${new Date(r.created_at).toLocaleDateString()}</span>${isOwner?'<span class="gb-del" title="supprimer">✕</span>':''}</div>
+      <div class="gb-msg">${esc(r.message)}</div></div>`).join('');
+  box.innerHTML=`<div class="xvy-block"><h4>📖 Livre d'or (${rows.length})</h4>
+    <div id="gbList" style="max-height:220px;overflow-y:auto;">${items||'<div class="hint" style="font-size:11px;">aucun message — laisse le premier !</div>'}</div>
+    ${session?`<div class="gb-form"><input id="gbInput" maxlength="280" placeholder="laisse un message..."><button class="btn small" id="gbSend">Envoyer</button></div>`
+      :`<p class="hint" style="font-size:11px;margin-top:8px;">connecte-toi pour signer le livre d'or</p>`}</div>`;
+  applyLang(box);
+  if(session){
+    const send=async()=>{
+      const inp=document.getElementById('gbInput'); const msg=(inp.value||'').trim();
+      if(!msg) return;
+      try{
+        await pgFetch('/guestbook',{method:'POST',body:JSON.stringify({profile_uid:p.uid,author_uid:session.uid,author_name:session.username,message:msg})});
+        inp.value=''; toast('Message publié ✓','ok'); mountGuestbook(p,isOwner);
+      }catch(e){ toast('Erreur, réessaie.','err'); }
+    };
+    document.getElementById('gbSend').onclick=send;
+    document.getElementById('gbInput').onkeydown=e=>{ if(e.key==='Enter') send(); };
+  }
+  if(isOwner){
+    box.querySelectorAll('.gb-del').forEach(x=>{
+      x.onclick=async()=>{
+        const id=x.closest('.gb-item').dataset.id;
+        try{ await pgFetch('/guestbook?id=eq.'+id,{method:'DELETE'}); mountGuestbook(p,isOwner); }catch(e){}
+      };
+    });
+  }
+}
+
+// ----- onglet Statistiques du dashboard -----
+async function mountStatsTab(el,p){
+  el.innerHTML='<div class="dash-card"><h3>Statistiques</h3><p class="hint">Chargement…</p></div>';
+  const since=new Date(Date.now()-14*86400000).toISOString();
+  let events=[]; try{ events=await pgFetch('/profile_events?profile_uid=eq.'+p.uid+'&created_at=gte.'+encodeURIComponent(since)+'&select=event_type,meta,device,created_at&order=created_at.desc&limit=2000')||[]; }catch(e){}
+  const views=events.filter(e=>e.event_type==='view');
+  const clicks=events.filter(e=>e.event_type==='link_click');
+  // vues par jour (14 jours)
+  const days=[]; for(let i=13;i>=0;i--){ const d=new Date(Date.now()-i*86400000); days.push({key:d.toISOString().slice(0,10),label:d.getDate()+'/'+(d.getMonth()+1),n:0}); }
+  views.forEach(v=>{ const k=v.created_at.slice(0,10); const d=days.find(x=>x.key===k); if(d) d.n++; });
+  const max=Math.max(1,...days.map(d=>d.n));
+  // clics par lien
+  const byLink={}; clicks.forEach(c=>{ const l=(c.meta&&c.meta.label)||'lien'; byLink[l]=(byLink[l]||0)+1; });
+  const linkRows=Object.entries(byLink).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  // appareils
+  const mob=views.filter(v=>v.device==='mobile').length, desk=views.length-mob;
+  // top fans (visiteurs connectés)
+  const fans={}; views.forEach(v=>{ const m=v.meta||{}; if(m.viewer_uid&&m.viewer_uid!==p.uid) fans[m.viewer_name||('uid '+m.viewer_uid)]=(fans[m.viewer_name||m.viewer_uid]||0)+1; });
+  const fanRows=Object.entries(fans).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  // top scores
+  const [lbR,lbC]=await Promise.all([fetchLeaderboard(p.uid,'reaction'),fetchLeaderboard(p.uid,'cps')]);
+  el.innerHTML=`
+    <div class="dash-grid4">
+      <div class="dash-stat"><span class="lbl">Vues (14 j)</span><span class="val">${views.length}</span></div>
+      <div class="dash-stat"><span class="lbl">Clics de liens (14 j)</span><span class="val">${clicks.length}</span></div>
+      <div class="dash-stat"><span class="lbl">Mobile</span><span class="val">${views.length?Math.round(mob/views.length*100):0}%</span></div>
+      <div class="dash-stat"><span class="lbl">Desktop</span><span class="val">${views.length?Math.round(desk/views.length*100):0}%</span></div>
+    </div>
+    <div class="dash-card"><h3>Vues par jour</h3>
+      <div class="statbar-wrap">${days.map(d=>`<div class="statbar" style="height:${Math.round(d.n/max*100)}%;"><span class="tip">${d.n}</span></div>`).join('')}</div>
+      <div class="statbar-labels">${days.map(d=>`<span>${d.label}</span>`).join('')}</div>
+    </div>
+    <div class="dash-card"><h3>Clics par lien</h3>
+      ${linkRows.length?linkRows.map(([l,n])=>`<div class="lb-row"><span>${esc(l)}</span><b>${n}</b></div>`).join(''):'<p class="hint">Aucun clic enregistré pour l\'instant.</p>'}
+    </div>
+    <div class="dash-card"><h3>Top fans (visiteurs connectés)</h3>
+      ${fanRows.length?fanRows.map(([n,c],i)=>`<div class="lb-row"><span>${['🥇','🥈','🥉','4.','5.'][i]} ${esc(n)}</span><b>${c} visites</b></div>`).join(''):'<p class="hint">Pas encore de visiteurs connectés.</p>'}
+    </div>
+    <div class="dash-card"><h3>Mini-jeux — meilleurs scores</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><h4 style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">${GAME_DEFS.reaction.name}</h4>${lbHTML(lbR,'reaction')}</div>
+        <div><h4 style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">${GAME_DEFS.cps.name}</h4>${lbHTML(lbC,'cps')}</div>
+      </div>
+    </div>
+    <div class="dash-card"><h3>Succès</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${ACH_DEFS.map(a=>{ const on=(p.achievements||[]).includes(a.id); return `<div class="dash-check${on?'':' off'}">${on?'✓':'○'} ${a.emo} ${a.name} — <span style="opacity:.7">${a.desc}</span></div>`; }).join('')}
+      </div>
+    </div>`;
+  applyLang(el);
+}
 
 
 // ===== tilt / cursor / discord =====
