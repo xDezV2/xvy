@@ -406,15 +406,78 @@
   .statbar-labels{ display:flex; gap:3px; } .statbar-labels span{ flex:1; text-align:center; font-size:8px; color:var(--text-dim); font-family:'JetBrains Mono',monospace; }
   .presence-live{ animation:pulseLive 2s ease-in-out infinite; }
   @keyframes pulseLive{ 0%,100%{opacity:1;} 50%{opacity:.55;} }
+
+  /* ===== design system avancé (variables gated par classes sx-* : rien ne change tant que l'user ne personnalise pas) ===== */
+  body.sx-font .profilebox{ font-family:var(--font-body, 'Inter', sans-serif); }
+  body.sx-font .profilebox .name, body.sx-font .profilebox .dname{ font-family:var(--font-heading, 'Space Grotesk', sans-serif); }
+  body.sx-fscale .profilebox .name{ font-size:calc(28px * var(--font-scale,1)); }
+  body.sx-fscale .profilebox .bio{ font-size:calc(14px * var(--font-scale,1)); }
+  body.sx-fscale .profilebox .link .txt{ font-size:calc(13px * var(--font-scale,1)); }
+  body.sx-fweight .profilebox{ font-weight:var(--font-weight,400); }
+  body.sx-lspace .profilebox{ letter-spacing:var(--letter-spacing,normal); }
+  body.sx-lheight .profilebox .bio, body.sx-lheight .profilebox .customtext{ line-height:var(--line-height,1.5); }
+  body.sx-radius .profilebox{ border-radius:var(--radius,24px)!important; }
+  body.sx-radius .link, body.sx-radius .discord-card, body.sx-radius .xvy-block{ border-radius:calc(var(--radius,24px) * .55)!important; }
+  body.sx-border .profilebox{ border-width:var(--border-w,1px)!important; }
+  body.sx-shadow .profilebox{ box-shadow:0 24px 60px -18px rgba(0,0,0,calc(var(--shadow-i,.6)))!important; }
+  body.sx-width .card{ max-width:var(--content-w,400px)!important; }
+  body.sx-tight .profilebox{ padding:22px 18px!important; } body.sx-tight .card{ gap:12px!important; }
+  body.sx-airy .profilebox{ padding:44px 30px!important; } body.sx-airy .card{ gap:28px!important; }
+  body.sx-left .card{ align-items:stretch; }
+  body.sx-left .profilebox{ text-align:left; }
+  body.sx-left .identity, body.sx-left .avatar-wrap{ align-items:flex-start; text-align:left; }
+  body.sx-left .social-inline{ justify-content:flex-start; }
+  body.sx-glow .tiltwrap{ position:relative; }
+  body.sx-glow .profilebox::after{ content:''; position:absolute; inset:-2px; border-radius:inherit; z-index:-1; background:radial-gradient(60% 60% at 50% 0%, color-mix(in srgb,var(--accent) calc(var(--glow,.5)*60%),transparent), transparent 70%); filter:blur(28px); pointer-events:none; }
+  body.sx-anim-float .profilebox{ animation:sxFloat 5s ease-in-out infinite; }
+  body.sx-anim-breathe .profilebox{ animation:sxBreathe 4.5s ease-in-out infinite; }
+  body.sx-anim-pop .link:hover, body.sx-anim-pop .game-btn:hover{ transform:translateY(-2px) scale(1.02); }
+  @keyframes sxFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
+  @keyframes sxBreathe{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.015); } }
+  #sx-gradient{ position:fixed; inset:0; z-index:0; opacity:0; transition:opacity .5s; pointer-events:none; }
+  body.sx-gradient #sx-gradient{ opacity:1; }
+  body.sx-tint #wallpaper-overlay{ background:var(--overlay-tint)!important; }
+  #sx-grain{ position:fixed; inset:0; z-index:2; pointer-events:none; opacity:0; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"); }
+  body.sx-grain #sx-grain{ opacity:.09; }
+  #sx-vignette{ position:fixed; inset:0; z-index:2; pointer-events:none; opacity:0; box-shadow:inset 0 0 200px 60px rgba(0,0,0,.7); }
+  body.sx-vignette #sx-vignette{ opacity:1; }
+  body.sx-safe .profilebox, body.sx-safe .avatar-ring, body.sx-safe #aurora-bg *{ animation:none!important; }
+  @media (prefers-reduced-motion:reduce){ body.sx-anim-float .profilebox, body.sx-anim-breathe .profilebox{ animation:none; } }
+
+  /* ===== composants onglet Design ===== */
+  .chips{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .chip{ background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:var(--text-dim); font-size:11px; padding:5px 10px; border-radius:999px; cursor:pointer; font-family:'JetBrains Mono',monospace; }
+  .chip.on{ color:var(--text); border-color:var(--accent); background:color-mix(in srgb,var(--accent) 16%,transparent); }
+  .preset-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:10px; }
+  .preset-cell{ position:relative; aspect-ratio:3/4; border-radius:14px; border:1px solid rgba(255,255,255,.14); cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:#fff; text-shadow:0 1px 6px rgba(0,0,0,.7); overflow:hidden; transition:transform .15s, box-shadow .15s; }
+  .preset-cell:hover{ transform:translateY(-3px); box-shadow:0 10px 24px -8px rgba(0,0,0,.6); }
+  .preset-cell .pc-emo{ font-size:26px; } .preset-cell .pc-name{ font-size:11px; font-weight:600; }
+  .preset-cell .pc-dot{ width:16px; height:5px; border-radius:3px; }
+  .font-prev{ margin-top:8px; padding:8px 10px; border-radius:8px; background:rgba(255,255,255,.04); font-size:18px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  select#fontHeading, select#fontBody, select#cardAnim{ width:100%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:9px 11px; color:var(--text); font-size:13px; outline:none; }
+  .tabs.seg{ display:flex; gap:0; border:1px solid rgba(255,255,255,.1); border-radius:10px; overflow:hidden; }
+  .tabs.seg button{ flex:1; background:transparent; border:none; color:var(--text-dim); font-size:12px; padding:8px 6px; cursor:pointer; }
+  .tabs.seg button.active{ background:color-mix(in srgb,var(--accent) 22%,transparent); color:var(--text); }
+  .grad-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(64px,1fr)); gap:8px; }
+  .grad-cell{ height:46px; border-radius:10px; border:2px solid transparent; cursor:pointer; }
+  .grad-cell.on{ border-color:var(--accent); }
+  .mytheme-row{ display:flex; justify-content:space-between; align-items:center; padding:5px 0; font-size:12px; }
+  .game-cfg-row{ display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:13px; border-bottom:1px solid rgba(255,255,255,.05); }
+  .blk-row{ display:flex; align-items:center; gap:8px; padding:7px 10px; background:rgba(255,255,255,.04); border-radius:9px; margin-bottom:6px; }
+  .blk-row .blk-name{ flex:1; font-size:13px; } .blk-row .blk-move{ cursor:pointer; opacity:.6; padding:0 4px; } .blk-row .blk-move:hover{ opacity:1; }
 </style>
 </head>
 <body class="no-wall theme-glass">
 
 <canvas id="particles"></canvas>
+<div id="sx-gradient"></div>
 <div id="wallpaper"></div>
 <video id="wallpaperVideo" autoplay muted loop playsinline></video>
 <div id="aurora-bg"><div class="blob blob-a"></div><div class="blob blob-b"></div></div>
 <div id="wallpaper-overlay"></div>
+<div id="sx-grain"></div>
+<div id="sx-vignette"></div>
 <div class="topbar"><div class="who" id="sessionInfo">…</div><div class="acts" id="topbarActions"></div></div>
 <div class="wrap"><div id="app" class="card"><div class="loading"><span class="loader-dots"><i></i><i></i><i></i></span></div></div></div>
 
@@ -480,6 +543,112 @@ function can(profile, perm){ if(!profile) return false; return (PERMISSIONS[prof
 function isStaffPlus(profile){ return profile && profile.role!=='user'; }
 const DEFAULT_OP={card:100,links:100,avatar:100,text:100,wallpaper:100,overlay:70,blur:20};
 const DEFAULT_EFFECTS={splash:true,typewriter:true,particles:true,autoplay:true,discRotate:true,tilt:true,hideViews:false,bgType:'image',bgVideo:'',musicCover:'',musicTitle:''};
+// ===== design tokens avancés (tous optionnels : -1 / '' / 0 = "défaut du thème", non intrusif) =====
+const DEFAULT_STYLE={
+  fontHeading:'', fontBody:'',        // '' = police par défaut du thème
+  fontScale:100,                      // % (80..130)
+  fontWeight:0,                       // 0 = défaut ; sinon 300..800
+  letterSpacing:0,                    // px (-1..4)
+  lineHeight:0,                       // 0 = défaut ; sinon 120..200 (%)
+  radius:-1,                          // -1 = défaut ; sinon 0..32 px
+  borderWidth:-1,                     // -1 = défaut ; sinon 0..4 px
+  shadow:-1,                          // -1 = défaut ; sinon 0..100 intensité
+  cardAnim:'none',                    // none|float|breathe|pop
+  contentWidth:0,                     // 0 = défaut(400) ; sinon 320..560
+  density:0,                          // -1 compact, 0 normal, 1 aéré
+  align:'center',                     // center|left
+  glow:0,                             // halo accent derrière la carte 0..100
+  grain:false, vignette:false,        // texture / vignettage
+  overlayTint:'',                     // teinte hex sur le fond
+  gradient:'',                        // fond dégradé custom (si pas d'image/vidéo)
+  animIntensity:100,                  // 0..150 (0 = statique)
+  safeMode:false                      // désactive les effets lourds
+};
+// ===== registre extensible des mini-jeux (ajouter un jeu = une entrée ici) =====
+const GAME_REGISTRY={
+  reaction:{name:'⚡ Réflexe',unit:'ms',better:'asc',fmt:v=>Math.round(v)+' ms',status:'live'},
+  cps:{name:'🖱️ Clics/s',unit:'cps',better:'desc',fmt:v=>(+v).toFixed(1)+' cps',status:'live'},
+  memory:{name:'🧠 Mémoire',unit:'niv',better:'desc',fmt:v=>'niv '+Math.round(v),status:'soon'},
+  aim:{name:'🎯 Précision',unit:'pts',better:'desc',fmt:v=>Math.round(v)+' pts',status:'soon'},
+  pattern:{name:'🔁 Séquence',unit:'niv',better:'desc',fmt:v=>'niv '+Math.round(v),status:'soon'}
+};
+// config par défaut des défis (par profil) : quels jeux sont activés + titre custom
+const DEFAULT_GAMES={enabled:{reaction:true,cps:true},title:''};
+
+// ===== bibliothèque de polices (chargées à la demande depuis Google Fonts) =====
+const FONTS=[
+  // clean / sans
+  {f:'Inter',cat:'clean',fb:'sans-serif'},{f:'Space Grotesk',cat:'clean',fb:'sans-serif'},
+  {f:'Poppins',cat:'clean',fb:'sans-serif'},{f:'Sora',cat:'clean',fb:'sans-serif'},
+  {f:'Manrope',cat:'clean',fb:'sans-serif'},{f:'Outfit',cat:'clean',fb:'sans-serif'},
+  {f:'Plus Jakarta Sans',cat:'clean',fb:'sans-serif'},
+  // classy / serif
+  {f:'Playfair Display',cat:'classy',fb:'serif'},{f:'Cormorant Garamond',cat:'classy',fb:'serif'},
+  {f:'DM Serif Display',cat:'classy',fb:'serif'},{f:'Marcellus',cat:'classy',fb:'serif'},
+  // futuristic / display
+  {f:'Orbitron',cat:'futuristic',fb:'sans-serif'},{f:'Rajdhani',cat:'futuristic',fb:'sans-serif'},
+  {f:'Chakra Petch',cat:'futuristic',fb:'sans-serif'},{f:'Audiowide',cat:'futuristic',fb:'cursive'},
+  {f:'Michroma',cat:'futuristic',fb:'sans-serif'},
+  // handwritten
+  {f:'Caveat',cat:'handwritten',fb:'cursive'},{f:'Dancing Script',cat:'handwritten',fb:'cursive'},
+  {f:'Pacifico',cat:'handwritten',fb:'cursive'},
+  // terminal / mono
+  {f:'JetBrains Mono',cat:'terminal',fb:'monospace'},{f:'Space Mono',cat:'terminal',fb:'monospace'},
+  {f:'Fira Code',cat:'terminal',fb:'monospace'},{f:'IBM Plex Mono',cat:'terminal',fb:'monospace'},
+  // gothic / bold
+  {f:'Bebas Neue',cat:'gothic',fb:'sans-serif'},{f:'Anton',cat:'gothic',fb:'sans-serif'},
+  {f:'Oswald',cat:'gothic',fb:'sans-serif'},{f:'Unbounded',cat:'gothic',fb:'sans-serif'}
+];
+const FONT_CATS={clean:'Clean',classy:'Classy',futuristic:'Futuriste',handwritten:'Manuscrit',terminal:'Terminal',gothic:'Gothic / Bold'};
+const _loadedFonts=new Set(['Inter','Space Grotesk','JetBrains Mono']); // déjà dans le <head>
+function ensureFont(family){
+  if(!family||_loadedFonts.has(family)) return;
+  _loadedFonts.add(family);
+  const l=document.createElement('link'); l.rel='stylesheet';
+  l.href='https://fonts.googleapis.com/css2?family='+encodeURIComponent(family).replace(/%20/g,'+')+':wght@400;500;600;700&display=swap';
+  document.head.appendChild(l);
+}
+function fontStack(family){ const def=FONTS.find(x=>x.f===family); return '"'+family+'", '+((def&&def.fb)||'sans-serif'); }
+
+// ===== catalogue de presets "one-click" (thème + accent + tokens de style) =====
+// Appliquer un preset = remplir le brouillon ; l'utilisateur peut ensuite tout modifier puis sauvegarder.
+const PRESETS=[
+  {id:'midnight',name:'Midnight',cat:'dark',emo:'🌑',theme:'minimal',accent:'#7a8fc9',style:{fontHeading:'Sora',fontBody:'Inter',radius:16,shadow:60,glow:20,gradient:'radial-gradient(120% 120% at 50% 0%, #1a1f2e 0%, #0a0c12 60%)',vignette:true}},
+  {id:'cleanwhite',name:'Clean',cat:'clean',emo:'⚪',theme:'minimal',accent:'#5ec9b8',style:{fontHeading:'Plus Jakarta Sans',fontBody:'Inter',radius:14,borderWidth:1,shadow:25,density:0,gradient:'linear-gradient(160deg,#20242c,#14171d)'}},
+  {id:'cyber',name:'Cyber',cat:'cyber',emo:'🟣',theme:'neon',accent:'#b57edc',style:{fontHeading:'Orbitron',fontBody:'Rajdhani',radius:6,glow:70,grain:true,gradient:'linear-gradient(135deg,#1a0a2e,#0a0a1e)',cardAnim:'breathe'}},
+  {id:'neonpink',name:'Neon Pink',cat:'neon',emo:'💗',theme:'neon',accent:'#ff4fa3',style:{fontHeading:'Chakra Petch',fontBody:'Rajdhani',radius:10,glow:85,gradient:'radial-gradient(120% 100% at 50% 0%,#2a0a24,#0a0413)'}},
+  {id:'glassmorph',name:'Glass',cat:'glass',emo:'🧊',theme:'glass',accent:'#8fb39d',style:{fontHeading:'Space Grotesk',fontBody:'Inter',radius:26,shadow:45,glow:15}},
+  {id:'anime',name:'Anime',cat:'anime',emo:'🌸',theme:'aurora',accent:'#f0abfc',style:{fontHeading:'Poppins',fontBody:'Poppins',radius:24,glow:60,cardAnim:'float',gradient:'linear-gradient(160deg,#2a1840,#160b28)'}},
+  {id:'luxury',name:'Luxury',cat:'luxury',emo:'👑',theme:'sunset',accent:'#c9b25e',style:{fontHeading:'Playfair Display',fontBody:'Cormorant Garamond',fontScale:110,radius:8,borderWidth:1,shadow:70,gradient:'linear-gradient(160deg,#241a10,#120d08)',vignette:true}},
+  {id:'brutalist',name:'Brutalist',cat:'brutalist',emo:'⬛',theme:'minimal',accent:'#e8e8e8',style:{fontHeading:'Anton',fontBody:'Space Mono',radius:0,borderWidth:3,shadow:0,align:'left',gradient:'#0c0c0c'}},
+  {id:'streamer',name:'Streamer',cat:'streamer',emo:'🎮',theme:'neon',accent:'#9146FF',style:{fontHeading:'Unbounded',fontBody:'Outfit',radius:14,glow:65,cardAnim:'pop',gradient:'linear-gradient(135deg,#1a1030,#0d0a1a)'}},
+  {id:'egirl',name:'E-girl',cat:'egirl',emo:'🎀',theme:'aurora',accent:'#ff6ec7',style:{fontHeading:'Pacifico',fontBody:'Poppins',radius:28,glow:75,grain:true,cardAnim:'float',gradient:'radial-gradient(120% 100% at 50% 0%,#2b0f2a,#120814)'}},
+  {id:'terminal',name:'Terminal',cat:'dev',emo:'💻',theme:'mono',accent:'#53fc18',style:{fontHeading:'JetBrains Mono',fontBody:'JetBrains Mono',radius:4,borderWidth:1,align:'left',gradient:'#050a05'}},
+  {id:'musicartist',name:'Artist',cat:'music',emo:'🎧',theme:'sunset',accent:'#e0685e',style:{fontHeading:'Bebas Neue',fontBody:'Manrope',fontScale:112,radius:18,glow:40,gradient:'linear-gradient(160deg,#2a1220,#140a18)',vignette:true}},
+  {id:'creatorpro',name:'Creator Pro',cat:'creator',emo:'⭐',theme:'glass',accent:'#7a8fc9',style:{fontHeading:'Sora',fontBody:'Plus Jakarta Sans',radius:18,borderWidth:1,shadow:50,glow:25,density:0}},
+  {id:'vaporwave',name:'Vaporwave',cat:'neon',emo:'🌴',theme:'neon',accent:'#22d3ee',style:{fontHeading:'Audiowide',fontBody:'Rajdhani',radius:12,glow:70,grain:true,gradient:'linear-gradient(160deg,#2a1150,#0a1030)'}},
+  {id:'noir',name:'Noir',cat:'dark',emo:'🖤',theme:'minimal',accent:'#9a9ea6',style:{fontHeading:'Oswald',fontBody:'Inter',radius:6,borderWidth:1,shadow:80,gradient:'#0a0a0a',vignette:true,grain:true}},
+  {id:'sakura',name:'Sakura',cat:'anime',emo:'🌺',theme:'aurora',accent:'#fb7185',style:{fontHeading:'DM Serif Display',fontBody:'Poppins',radius:22,glow:55,gradient:'linear-gradient(160deg,#301826,#160a12)'}}
+];
+const PRESET_CATS={all:'Tout',dark:'Dark',clean:'Clean',glass:'Glass',cyber:'Cyber',neon:'Neon',anime:'Anime',luxury:'Luxury',brutalist:'Brutalist',streamer:'Streamer',egirl:'E-girl/boy',dev:'Dev',music:'Music',creator:'Creator'};
+// dégradés de fond prêts à l'emploi
+const GRADIENTS=[
+  'linear-gradient(135deg,#3a4a5a,#1a2a3a)','radial-gradient(120% 120% at 50% 0%,#1a1f2e,#0a0c12 60%)',
+  'linear-gradient(135deg,#1a0a2e,#0a0a1e)','radial-gradient(120% 100% at 50% 0%,#2a0a24,#0a0413)',
+  'linear-gradient(160deg,#241a10,#120d08)','linear-gradient(160deg,#2a1840,#160b28)',
+  'linear-gradient(135deg,#0f2027,#203a43,#2c5364)','linear-gradient(135deg,#42275a,#734b6d)',
+  'linear-gradient(160deg,#2a1220,#140a18)','#0a0a0a','#050a05','linear-gradient(135deg,#232526,#414345)'
+];
+function myThemes(){ try{ return JSON.parse(localStorage.getItem('xvy_mythemes')||'[]'); }catch(e){ return []; } }
+function saveMyTheme(name,style){ const list=myThemes().filter(t=>t.name!==name); list.push({name,style}); try{ localStorage.setItem('xvy_mythemes',JSON.stringify(list.slice(-24))); }catch(e){} }
+function deleteMyTheme(name){ const list=myThemes().filter(t=>t.name!==name); try{ localStorage.setItem('xvy_mythemes',JSON.stringify(list)); }catch(e){} }
+// contraste WCAG (accent vs fond sombre) pour recommandation
+function contrastRatio(hex){
+  const c=hex.replace('#',''); if(c.length!==6) return 0;
+  const rgb=[0,2,4].map(i=>parseInt(c.substr(i,2),16)/255).map(v=>v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4));
+  const L=0.2126*rgb[0]+0.7152*rgb[1]+0.0722*rgb[2];
+  return (L+0.05)/(0.05); // vs noir pur (approx du fond sombre)
+}
 
 // ===== comptes demo/test (seed) =====
 const DEMO_ADJ=['Silencieux','Nocturne','Rapide','Discret','Lunaire','Sauvage','Paisible','Curieux','Vif','Solaire','Errant','Givré','Ardent','Timide','Zen','Placide','Malin','Vagabond'];
@@ -576,7 +745,7 @@ async function uploadBgVideo(file,uid){
   return SUPABASE_URL+'/storage/v1/object/public/backgrounds/'+path+'?v='+Date.now();
 }
 async function sha256(s){ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)); return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''); }
-function mapRow(r){ return {uid:r.uid,username:r.username,hash:r.password_hash,tag:r.tag,bio:r.bio,accent:r.accent,links:r.links||[],wallpaper:r.wallpaper||'',theme:r.theme||'glass',avatar:r.avatar||'',customText:r.custom_text||'',opacity:{...DEFAULT_OP,...(r.opacity||{})},isAdmin:!!r.is_admin,banned:!!r.banned,music:r.music||'',views:r.views||0,viewsBonus:r.views_bonus||0,effects:{...DEFAULT_EFFECTS,...(r.effects||{})},badges:r.badges||[],cursorUrl:r.cursor_url||'',discordId:r.discord_id||'',discordUsername:r.discord_username||'',discordGlobalName:r.discord_global_name||'',discordAvatar:r.discord_avatar||'',role:r.role||'user',staffNote:r.staff_note||'',deletedAt:r.deleted_at||null,accountType:r.account_type||'real',excludeFromStats:!!r.exclude_from_stats,seedBatch:r.seed_batch||null,createdByUid:r.created_by_uid||null,likes:r.likes||0,achievements:r.achievements||[],poll:r.poll||null,secret:r.secret||null}; }
+function mapRow(r){ return {uid:r.uid,username:r.username,hash:r.password_hash,tag:r.tag,bio:r.bio,accent:r.accent,links:r.links||[],wallpaper:r.wallpaper||'',theme:r.theme||'glass',avatar:r.avatar||'',customText:r.custom_text||'',opacity:{...DEFAULT_OP,...(r.opacity||{})},isAdmin:!!r.is_admin,banned:!!r.banned,music:r.music||'',views:r.views||0,viewsBonus:r.views_bonus||0,effects:{...DEFAULT_EFFECTS,...(r.effects||{})},badges:r.badges||[],cursorUrl:r.cursor_url||'',discordId:r.discord_id||'',discordUsername:r.discord_username||'',discordGlobalName:r.discord_global_name||'',discordAvatar:r.discord_avatar||'',role:r.role||'user',staffNote:r.staff_note||'',deletedAt:r.deleted_at||null,accountType:r.account_type||'real',excludeFromStats:!!r.exclude_from_stats,seedBatch:r.seed_batch||null,createdByUid:r.created_by_uid||null,likes:r.likes||0,achievements:r.achievements||[],poll:r.poll||null,secret:r.secret||null,style:{...DEFAULT_STYLE,...(r.style||{})},games:{...DEFAULT_GAMES,...(r.games||{}),enabled:{...DEFAULT_GAMES.enabled,...((r.games||{}).enabled||{})}}}; }
 function isDemo(p){ return p && p.accountType && p.accountType!=='real'; }
 
 // ===== disponibilité pseudo / uid (correction du faux "déjà pris") =====
@@ -631,7 +800,7 @@ async function restoreSession(){
     return p;
   }catch(e){ return null; } // souci réseau : on ne restaure pas mais on ne casse pas non plus
 }
-async function saveProfile(pf){ await pgFetch('/profiles?uid=eq.'+pf.uid,{method:'PATCH',body:JSON.stringify({tag:pf.tag,bio:pf.bio,accent:pf.accent,links:pf.links,wallpaper:pf.wallpaper,theme:pf.theme,avatar:pf.avatar,custom_text:pf.customText,opacity:pf.opacity,music:pf.music,effects:pf.effects,cursor_url:pf.cursorUrl,discord_id:pf.discordId,poll:pf.poll,secret:pf.secret})}); }
+async function saveProfile(pf){ await pgFetch('/profiles?uid=eq.'+pf.uid,{method:'PATCH',body:JSON.stringify({tag:pf.tag,bio:pf.bio,accent:pf.accent,links:pf.links,wallpaper:pf.wallpaper,theme:pf.theme,avatar:pf.avatar,custom_text:pf.customText,opacity:pf.opacity,music:pf.music,effects:pf.effects,cursor_url:pf.cursorUrl,discord_id:pf.discordId,poll:pf.poll,secret:pf.secret,style:pf.style,games:pf.games})}); }
 async function getProfile(uid){ const r=await pgFetch('/profiles?uid=eq.'+uid+'&select=*'); return r&&r.length?mapRow(r[0]):null; }
 async function listDirectory(){ const r=await pgFetch('/profiles?deleted_at=is.null&select=*&order=uid.asc'); return (r||[]).map(mapRow); }
 async function logAdmin(action, target, oldVal, newVal){
@@ -733,11 +902,13 @@ function freshDraft(p){
     wallpaper:p.wallpaper, music:p.music, cursorUrl:p.cursorUrl, discordId:p.discordId,
     theme:p.theme, accent:p.accent, opacity:{...DEFAULT_OP,...p.opacity},
     effects:{...DEFAULT_EFFECTS,...p.effects},
+    style:{...DEFAULT_STYLE,...(p.style||{})},
+    games:{...DEFAULT_GAMES,...(p.games||{}),enabled:{...DEFAULT_GAMES.enabled,...((p.games||{}).enabled||{})}},
     links:JSON.parse(JSON.stringify(p.links||[])).map(l=>({platform:l.platform,raw:l.raw||l.url||'',label:l.label,copy:!!l.copy}))
   };
 }
 function sidebarHTML(active){
-  const tabs=[['overview','Aperçu'],['customize','Personnaliser'],['links','Liens'],['effects','Effets'],['stats','Statistiques']];
+  const tabs=[['overview','Aperçu'],['customize','Personnaliser'],['design','🎨 Design'],['interface','🧩 Interface'],['links','Liens'],['effects','Effets'],['stats','Statistiques']];
   return `<div class="dash-side">
     <div class="dash-logo">🔫 xvy</div>
     <div class="dash-search"><input placeholder="Rechercher des fonctions..." disabled></div>
@@ -844,7 +1015,33 @@ const I18N={
   'Succès débloqué :':'Achievement unlocked:','Chargement…':'Loading…',
   "Aucun clic enregistré pour l'instant.":'No clicks recorded yet.',
   'Pas encore de visiteurs connectés.':'No signed-in visitors yet.',
-  'mot de passe':'password','vote':'vote','votes':'votes','en ce moment':'right now'
+  'mot de passe':'password','vote':'vote','votes':'votes','en ce moment':'right now',
+  // onglet Design / Interface
+  '🎨 Design':'🎨 Design','🧩 Interface':'🧩 Interface',
+  '🎁 Presets — applique un style complet en 1 clic':'🎁 Presets — apply a full style in 1 click',
+  '🔤 Polices':'🔤 Fonts','Police des titres':'Heading font','Police du texte':'Body font','Défaut du thème':'Theme default',
+  '🧱 Formes & layout':'🧱 Shapes & layout','Densité':'Density','Compact':'Compact','Normal':'Normal','Aéré':'Airy',
+  'Alignement':'Alignment','Centré':'Centered','Gauche':'Left',
+  '✨ Ambiance & effets':'✨ Ambiance & effects','Animation de la carte':'Card animation','Aucune':'None',
+  'Flottement':'Float','Respiration':'Breathe','Pop au survol':'Pop on hover','Teinte du fond (overlay)':'Background tint (overlay)',
+  'Grain / texture':'Grain / texture','Vignettage':'Vignette','Mode performance (désactive les effets lourds)':'Performance mode (disables heavy effects)',
+  '🌈 Fond dégradé (si aucune image/vidéo)':'🌈 Gradient background (if no image/video)','Retirer le dégradé':'Remove gradient',
+  '🛠️ Outils':'🛠️ Tools','🎲 Aléatoire':'🎲 Random','👁 Aperçu plein écran':'👁 Full-screen preview','💾 Sauver ce thème':'💾 Save this theme','↺ Réinitialiser':'↺ Reset',
+  'Sauver ce thème':'Save this theme','Nom du thème':'Theme name','Sauver':'Save','Style réinitialisé':'Style reset',
+  'Taille du texte':'Text size','Épaisseur (0 = défaut)':'Weight (0 = default)','Espacement des lettres':'Letter spacing',
+  'Hauteur de ligne (0 = défaut)':'Line height (0 = default)','Coins arrondis (-1 = défaut)':'Corner radius (-1 = default)',
+  'Épaisseur des bordures (-1 = défaut)':'Border width (-1 = default)',"Intensité de l'ombre (-1 = défaut)":'Shadow intensity (-1 = default)',
+  'Largeur du contenu (0 = défaut)':'Content width (0 = default)','Halo lumineux (accent)':'Accent glow','Intensité des animations':'Animation intensity',
+  'défaut':'default','Mes thèmes :':'My themes:','appliquer':'apply','Aucun thème perso sauvegardé.':'No custom theme saved.',
+  '🧩 Blocs du profil':'🧩 Profile blocks','↺ Ordre par défaut':'↺ Default order','Ordre réinitialisé':'Order reset',
+  "L'en-tête (avatar, pseudo, bio, badges) reste toujours en haut.":'The header (avatar, username, bio, badges) always stays on top.',
+  '🎵 Musique':'🎵 Music','🔗 Icônes sociales':'🔗 Social icons','💬 Carte Discord':'💬 Discord card','📝 Texte libre':'📝 Free text',
+  '🔘 Boutons de liens':'🔘 Link buttons','❤️ Likes':'❤️ Likes','📊 Sondage':'📊 Poll','🔒 Secret':'🔒 Secret','🎮 Défis':'🎮 Challenges','📖 Livre d\'or':'📖 Guestbook',
+  '⚙️ Mes défis':'⚙️ My challenges','Titre du bloc (optionnel)':'Block title (optional)','Enregistrer':'Save',
+  'Réinitialiser les scores':'Reset scores','Défis mis à jour':'Challenges updated','Scores réinitialisés':'Scores reset',
+  'Seul toi peux configurer les défis de ton profil.':'Only you can configure your profile challenges.',
+  'Aucun défi activé. Clique ⚙️ pour en activer.':'No challenge enabled. Click ⚙️ to enable one.',
+  'Preset appliqué':'Preset applied','Thème appliqué':'Theme applied','Donne un nom':'Give it a name'
 };
 function tr(s){ if(LANG!=='en'||s==null) return s; const k=(''+s).trim(); const e=I18N[k]; return e!==undefined?(''+s).replace(k,e):s; }
 function applyLang(root){
@@ -899,6 +1096,54 @@ function applyVisual(p){
   const bgType=(p.effects&&p.effects.bgType)||'image';
   const hasBg=bgType==='video'?!!(p.effects&&p.effects.bgVideo):!!p.wallpaper;
   document.body.className='theme-'+(p.theme||'glass')+(hasBg?'':' no-wall');
+  applyStyle(p);
+}
+// applique les design tokens avancés : pose des variables CSS + active les classes sx-* correspondantes.
+// Chaque token n'agit QUE si l'utilisateur l'a explicitement réglé (sinon le thème garde son rendu d'origine).
+function applyStyle(p){
+  const s={...DEFAULT_STYLE,...(p&&p.style||{})};
+  const r=document.documentElement, b=document.body, cl=b.classList;
+  const on=(name,cond)=>cl.toggle(name,!!cond);
+  // polices
+  const hasFont=!!(s.fontHeading||s.fontBody);
+  if(s.fontHeading) ensureFont(s.fontHeading); if(s.fontBody) ensureFont(s.fontBody);
+  if(s.fontHeading) r.style.setProperty('--font-heading',fontStack(s.fontHeading));
+  if(s.fontBody) r.style.setProperty('--font-body',fontStack(s.fontBody));
+  on('sx-font',hasFont);
+  on('sx-fscale', s.fontScale && s.fontScale!==100); r.style.setProperty('--font-scale',(s.fontScale||100)/100);
+  on('sx-fweight', !!s.fontWeight); if(s.fontWeight) r.style.setProperty('--font-weight',s.fontWeight);
+  on('sx-lspace', !!s.letterSpacing); r.style.setProperty('--letter-spacing',(s.letterSpacing||0)+'px');
+  on('sx-lheight', !!s.lineHeight); if(s.lineHeight) r.style.setProperty('--line-height',(s.lineHeight/100));
+  // formes
+  on('sx-radius', s.radius>=0); if(s.radius>=0) r.style.setProperty('--radius',s.radius+'px');
+  on('sx-border', s.borderWidth>=0); if(s.borderWidth>=0) r.style.setProperty('--border-w',s.borderWidth+'px');
+  on('sx-shadow', s.shadow>=0); if(s.shadow>=0) r.style.setProperty('--shadow-i',(s.shadow/100*0.95).toFixed(3));
+  // layout
+  on('sx-width', s.contentWidth>=320); if(s.contentWidth>=320) r.style.setProperty('--content-w',s.contentWidth+'px');
+  on('sx-tight', s.density<0); on('sx-airy', s.density>0);
+  on('sx-left', s.align==='left');
+  // ambiance
+  on('sx-glow', s.glow>0); r.style.setProperty('--glow',((s.glow||0)/100).toFixed(2));
+  cl.remove('sx-anim-float','sx-anim-breathe','sx-anim-pop'); if(s.cardAnim&&s.cardAnim!=='none'&&!s.safeMode) cl.add('sx-anim-'+s.cardAnim);
+  on('sx-grain', s.grain && !s.safeMode);
+  on('sx-vignette', s.vignette);
+  on('sx-safe', !!s.safeMode);
+  // fond dégradé (uniquement si pas d'image/vidéo)
+  const bgType=(p&&p.effects&&p.effects.bgType)||'image';
+  const hasMedia=bgType==='video'?!!(p&&p.effects&&p.effects.bgVideo):!!(p&&p.wallpaper);
+  const useGrad=!!s.gradient && !hasMedia;
+  on('sx-gradient', useGrad);
+  const gEl=document.getElementById('sx-gradient'); if(gEl) gEl.style.background=useGrad?s.gradient:'';
+  if(useGrad) cl.remove('no-wall');
+  // teinte d'overlay
+  on('sx-tint', !!s.overlayTint);
+  if(s.overlayTint) r.style.setProperty('--overlay-tint',s.overlayTint);
+  // intensité d'animation → pilote la densité des particules (lu par startParticles)
+  window.__animIntensity=s.safeMode?0:((s.animIntensity==null?100:s.animIntensity)/100);
+}
+function resetStyleClasses(){
+  const cl=document.body.classList;
+  [...cl].filter(c=>c.indexOf('sx-')===0).forEach(c=>cl.remove(c));
 }
 function resetVisual(){
   const r=document.documentElement;
@@ -962,7 +1207,7 @@ function renderTopbar(){
 function commitDraft(p,d){
   p.avatar=d.avatar; p.bio=d.bio; p.customText=d.customText; p.wallpaper=d.wallpaper;
   p.music=d.music; p.cursorUrl=d.cursorUrl; p.discordId=d.discordId;
-  p.theme=d.theme; p.accent=d.accent; p.opacity=d.opacity; p.effects=d.effects;
+  p.theme=d.theme; p.accent=d.accent; p.opacity=d.opacity; p.effects=d.effects; p.style=d.style; p.games=d.games;
   p.links=d.links.filter(l=>(l.raw||'').trim()).map(l=>({platform:l.platform,label:(PLATFORMS[l.platform]||PLATFORMS.link).name,raw:l.raw,copy:!!l.copy,url:normalizeUrl(l.platform,l.raw)}));
 }
 function mountActionBar(el,p,d){
@@ -1251,6 +1496,224 @@ function mountEffectsTab(el,p,d){
   mountActionBar(el,p,d);
 }
 
+// ===== onglet 🧩 Interface : réordonner et masquer les blocs du profil =====
+function mountInterfaceTab(el,p,d){
+  d.style={...DEFAULT_STYLE,...(d.style||{})};
+  if(!Array.isArray(d.style.blocks)) d.style.blocks=resolveBlocks(d.style);
+  el.innerHTML=`
+    <div class="dash-card">
+      <h3>🧩 Blocs du profil</h3>
+      <p class="hint" style="margin-bottom:12px;">Réorganise (▲▼) et affiche/masque chaque bloc de ta page. L'en-tête (avatar, pseudo, bio, badges) reste toujours en haut.</p>
+      <div id="blockList"></div>
+      <button class="btn ghost small" id="blkReset" style="margin-top:10px;">↺ Ordre par défaut</button>
+    </div>
+  `;
+  const list=document.getElementById('blockList');
+  function draw(){
+    d.style.blocks=resolveBlocks(d.style);
+    list.innerHTML='';
+    d.style.blocks.forEach((b,i)=>{
+      const row=document.createElement('div'); row.className='blk-row';
+      row.innerHTML=`<span class="blk-move" data-up="${i}">▲</span><span class="blk-move" data-down="${i}">▼</span>
+        <span class="blk-name">${BLOCK_META[b.k]}</span>
+        <div class="togglesw${b.on!==false?' on':''}" data-tg="${i}"></div>`;
+      list.appendChild(row);
+    });
+    list.querySelectorAll('[data-up]').forEach(x=>x.onclick=()=>{ const i=+x.dataset.up; if(i>0){ const a=d.style.blocks; [a[i-1],a[i]]=[a[i],a[i-1]]; draw(); } });
+    list.querySelectorAll('[data-down]').forEach(x=>x.onclick=()=>{ const i=+x.dataset.down; const a=d.style.blocks; if(i<a.length-1){ [a[i+1],a[i]]=[a[i],a[i+1]]; draw(); } });
+    list.querySelectorAll('[data-tg]').forEach(t=>t.onclick=()=>{ const i=+t.dataset.tg; d.style.blocks[i].on=!(d.style.blocks[i].on!==false); t.classList.toggle('on',d.style.blocks[i].on!==false); });
+  }
+  draw();
+  document.getElementById('blkReset').onclick=()=>{ d.style.blocks=DEFAULT_BLOCK_ORDER.map(k=>({k,on:true})); draw(); toast('Ordre réinitialisé','ok'); };
+  mountActionBar(el,p,d);
+}
+
+// ===== onglet 🎨 Design : personnalisation avancée + presets + polices =====
+function mountDesignTab(el,p,d){
+  d.style={...DEFAULT_STYLE,...(d.style||{})};
+  const s=d.style;
+  const live=()=>applyVisual({...p,theme:d.theme,accent:d.accent,opacity:d.opacity,effects:d.effects,wallpaper:d.wallpaper,style:d.style});
+  let presetCat='all';
+  el.innerHTML=`
+    <div class="dash-card">
+      <h3>🎁 Presets — applique un style complet en 1 clic</h3>
+      <div class="chips" id="presetCats"></div>
+      <div class="preset-grid" id="presetGrid"></div>
+      <p class="hint">Un preset remplit tous les réglages ci-dessous. Tu peux ensuite tout modifier, puis Enregistrer.</p>
+    </div>
+    <div class="dash-card">
+      <h3>🔤 Polices</h3>
+      <div class="dash-grid2">
+        <div class="field"><label>Police des titres</label><select id="fontHeading"></select><div class="font-prev" id="fpH">Aperçu — ${esc(p.username||'Titre')}</div></div>
+        <div class="field"><label>Police du texte</label><select id="fontBody"></select><div class="font-prev" id="fpB" style="font-size:13px;">The quick brown fox — 0123456789</div></div>
+      </div>
+      <div id="typoSliders" style="margin-top:6px;"></div>
+    </div>
+    <div class="dash-card">
+      <h3>🧱 Formes & layout</h3>
+      <div id="shapeSliders"></div>
+      <div class="dash-grid2" style="margin-top:12px;">
+        <div class="field"><label>Densité</label><div class="tabs seg" id="segDensity"><button data-v="-1">Compact</button><button data-v="0">Normal</button><button data-v="1">Aéré</button></div></div>
+        <div class="field"><label>Alignement</label><div class="tabs seg" id="segAlign"><button data-v="center">Centré</button><button data-v="left">Gauche</button></div></div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <h3>✨ Ambiance & effets</h3>
+      <div id="ambSliders"></div>
+      <div class="dash-grid2" style="margin-top:12px;">
+        <div class="field"><label>Animation de la carte</label><select id="cardAnim">
+          <option value="none">Aucune</option><option value="float">Flottement</option><option value="breathe">Respiration</option><option value="pop">Pop au survol</option></select></div>
+        <div class="field"><label>Teinte du fond (overlay)</label><div class="hexrow"><span class="swdot" id="tintDot" style="background:${s.overlayTint||'transparent'}"></span><input id="overlayTint" style="max-width:150px;" placeholder="#000000 ou vide" value="${esc(s.overlayTint||'')}"></div></div>
+      </div>
+      <div id="ambToggles" style="margin-top:10px;"></div>
+    </div>
+    <div class="dash-card">
+      <h3>🌈 Fond dégradé (si aucune image/vidéo)</h3>
+      <div class="grad-grid" id="gradGrid"></div>
+      <button class="btn ghost small" id="gradClear" style="margin-top:8px;">Retirer le dégradé</button>
+    </div>
+    <div class="dash-card">
+      <h3>🛠️ Outils</h3>
+      <div class="row" style="flex-wrap:wrap;gap:8px;">
+        <button class="btn ghost small" id="btnRandom">🎲 Aléatoire</button>
+        <button class="btn ghost small" id="btnPreviewFull">👁 Aperçu plein écran</button>
+        <button class="btn ghost small" id="btnSaveTheme">💾 Sauver ce thème</button>
+        <button class="btn ghost small" id="btnResetStyle">↺ Réinitialiser</button>
+      </div>
+      <div id="contrastHint" class="hint" style="margin-top:8px;"></div>
+      <div id="myThemesBox" style="margin-top:10px;"></div>
+    </div>
+  `;
+
+  // --- presets ---
+  const cats=document.getElementById('presetCats');
+  const grid=document.getElementById('presetGrid');
+  function drawCats(){ cats.innerHTML=''; Object.entries(PRESET_CATS).forEach(([k,label])=>{ const c=document.createElement('button'); c.className='chip'+(presetCat===k?' on':''); c.textContent=label; c.onclick=()=>{ presetCat=k; drawCats(); drawPresets(); }; cats.appendChild(c); }); }
+  function drawPresets(){
+    grid.innerHTML='';
+    PRESETS.filter(pr=>presetCat==='all'||pr.cat===presetCat).forEach(pr=>{
+      const th=THEMES.find(t=>t.id===pr.theme)||THEMES[0];
+      const cell=document.createElement('button'); cell.className='preset-cell';
+      cell.style.background=(pr.style&&pr.style.gradient)||th.bg;
+      cell.innerHTML=`<span class="pc-emo">${pr.emo}</span><span class="pc-name">${pr.name}</span><span class="pc-dot" style="background:${pr.accent}"></span>`;
+      cell.onclick=()=>applyPreset(pr);
+      grid.appendChild(cell);
+    });
+  }
+  function applyPreset(pr){
+    d.theme=pr.theme; d.accent=pr.accent;
+    d.style={...DEFAULT_STYLE,...(pr.style||{})};
+    toast('Preset « '+pr.name+' » appliqué','ok');
+    mountDesignTab(el,p,d); // re-render pour refléter tous les contrôles
+  }
+  drawCats(); drawPresets();
+
+  // --- polices ---
+  const selH=document.getElementById('fontHeading'), selB=document.getElementById('fontBody');
+  function fillFontSelect(sel,val){ sel.innerHTML='<option value="">Défaut du thème</option>'+
+    Object.keys(FONT_CATS).map(cat=>`<optgroup label="${FONT_CATS[cat]}">`+FONTS.filter(f=>f.cat===cat).map(f=>`<option value="${f.f}"${val===f.f?' selected':''}>${f.f}</option>`).join('')+`</optgroup>`).join(''); }
+  fillFontSelect(selH,s.fontHeading); fillFontSelect(selB,s.fontBody);
+  const fpH=document.getElementById('fpH'), fpB=document.getElementById('fpB');
+  function previewFonts(){ if(s.fontHeading){ ensureFont(s.fontHeading); fpH.style.fontFamily=fontStack(s.fontHeading);} else fpH.style.fontFamily='';
+    if(s.fontBody){ ensureFont(s.fontBody); fpB.style.fontFamily=fontStack(s.fontBody);} else fpB.style.fontFamily=''; }
+  previewFonts();
+  selH.onchange=()=>{ s.fontHeading=selH.value; previewFonts(); live(); };
+  selB.onchange=()=>{ s.fontBody=selB.value; previewFonts(); live(); };
+
+  // --- helper sliders ---
+  function buildSliders(mountId,defs){
+    const box=document.getElementById(mountId); box.innerHTML='';
+    defs.forEach(cfg=>{
+      const wrap=document.createElement('div'); wrap.className='slider';
+      const cur=cfg.get();
+      wrap.innerHTML=`<div class="lbl"><span>${cfg.label}</span><span id="sv-${cfg.k}">${cfg.disp(cur)}</span></div><input type="range" min="${cfg.min}" max="${cfg.max}" step="${cfg.step||1}" value="${cur}">`;
+      box.appendChild(wrap);
+      const inp=wrap.querySelector('input');
+      inp.oninput=()=>{ cfg.set(+inp.value); document.getElementById('sv-'+cfg.k).textContent=cfg.disp(+inp.value); live(); };
+    });
+  }
+  buildSliders('typoSliders',[
+    {k:'fontScale',label:'Taille du texte',min:80,max:130,get:()=>s.fontScale||100,set:v=>s.fontScale=v,disp:v=>v+'%'},
+    {k:'fontWeight',label:'Épaisseur (0 = défaut)',min:0,max:800,step:100,get:()=>s.fontWeight||0,set:v=>s.fontWeight=v,disp:v=>v||'défaut'},
+    {k:'letterSpacing',label:'Espacement des lettres',min:-1,max:4,step:0.5,get:()=>s.letterSpacing||0,set:v=>s.letterSpacing=v,disp:v=>v+'px'},
+    {k:'lineHeight',label:'Hauteur de ligne (0 = défaut)',min:0,max:200,step:10,get:()=>s.lineHeight||0,set:v=>s.lineHeight=v,disp:v=>v?v+'%':'défaut'}
+  ]);
+  buildSliders('shapeSliders',[
+    {k:'radius',label:'Coins arrondis (-1 = défaut)',min:-1,max:32,get:()=>s.radius,set:v=>s.radius=v,disp:v=>v<0?'défaut':v+'px'},
+    {k:'borderWidth',label:'Épaisseur des bordures (-1 = défaut)',min:-1,max:4,get:()=>s.borderWidth,set:v=>s.borderWidth=v,disp:v=>v<0?'défaut':v+'px'},
+    {k:'shadow',label:'Intensité de l\'ombre (-1 = défaut)',min:-1,max:100,get:()=>s.shadow,set:v=>s.shadow=v,disp:v=>v<0?'défaut':v+'%'},
+    {k:'contentWidth',label:'Largeur du contenu (0 = défaut)',min:0,max:560,step:20,get:()=>s.contentWidth||0,set:v=>s.contentWidth=v<320?0:v,disp:v=>v<320?'défaut':v+'px'}
+  ]);
+  buildSliders('ambSliders',[
+    {k:'glow',label:'Halo lumineux (accent)',min:0,max:100,get:()=>s.glow||0,set:v=>s.glow=v,disp:v=>v+'%'},
+    {k:'animIntensity',label:'Intensité des animations',min:0,max:150,step:10,get:()=>s.animIntensity==null?100:s.animIntensity,set:v=>s.animIntensity=v,disp:v=>v+'%'}
+  ]);
+
+  // segmented density / align
+  function seg(id,val,set){ const box=document.getElementById(id); const draw=()=>[...box.children].forEach(b=>b.classList.toggle('active',String(b.dataset.v)===String(val()))); draw();
+    [...box.children].forEach(b=>b.onclick=()=>{ set(b.dataset.v); draw(); live(); }); }
+  seg('segDensity',()=>s.density,v=>s.density=+v);
+  seg('segAlign',()=>s.align,v=>s.align=v);
+
+  // card anim + tint
+  const ca=document.getElementById('cardAnim'); ca.value=s.cardAnim||'none'; ca.onchange=()=>{ s.cardAnim=ca.value; live(); };
+  const tint=document.getElementById('overlayTint');
+  tint.onchange=()=>{ const v=tint.value.trim(); s.overlayTint=/^#[0-9a-fA-F]{6}$/.test(v)?v:''; document.getElementById('tintDot').style.background=s.overlayTint||'transparent'; live(); };
+
+  // ambiance toggles
+  const at=document.getElementById('ambToggles');
+  const ambDefs=[['grain','Grain / texture'],['vignette','Vignettage'],['safeMode','Mode performance (désactive les effets lourds)']];
+  at.innerHTML=''; ambDefs.forEach(([k,label])=>{ const row=document.createElement('div'); row.className='tglrow';
+    row.innerHTML=`<span class="tglabel">${label}</span><div class="togglesw${s[k]?' on':''}" data-amb="${k}"></div>`; at.appendChild(row); });
+  at.querySelectorAll('[data-amb]').forEach(t=>{ t.onclick=()=>{ const k=t.dataset.amb; s[k]=!s[k]; t.classList.toggle('on',s[k]); live(); }; });
+
+  // gradients
+  const gg=document.getElementById('gradGrid'); gg.innerHTML='';
+  GRADIENTS.forEach(g=>{ const cell=document.createElement('button'); cell.className='grad-cell'+(s.gradient===g?' on':''); cell.style.background=g;
+    cell.onclick=()=>{ s.gradient=g; [...gg.children].forEach(x=>x.classList.remove('on')); cell.classList.add('on'); live(); }; gg.appendChild(cell); });
+  document.getElementById('gradClear').onclick=()=>{ s.gradient=''; [...gg.children].forEach(x=>x.classList.remove('on')); live(); };
+
+  // tools
+  document.getElementById('btnRandom').onclick=()=>{ const pr=PRESETS[Math.floor(Math.random()*PRESETS.length)]; applyPreset(pr); };
+  document.getElementById('btnPreviewFull').onclick=()=>{ const tmp={...p}; commitDraft(tmp,d); window.__previewProfile=tmp; view='previewProfile'; render(); };
+  document.getElementById('btnResetStyle').onclick=()=>{ d.style={...DEFAULT_STYLE}; toast('Style réinitialisé','ok'); mountDesignTab(el,p,d); };
+  document.getElementById('btnSaveTheme').onclick=()=>{
+    openModal('Sauver ce thème',`<div class="field"><label>Nom du thème</label><input id="themeName" placeholder="mon thème" maxlength="30"></div><div class="row"><button class="btn" id="themeSaveGo">Sauver</button></div>`,(body)=>{
+      body.querySelector('#themeSaveGo').onclick=()=>{ const n=(body.querySelector('#themeName').value||'').trim(); if(!n){ toast('Donne un nom','err'); return; } saveMyTheme(n,{...s}); closeModal(); toast('Thème « '+n+' » sauvé','ok'); drawMyThemes(); };
+    });
+  };
+  // contraste
+  const cr=contrastRatio(d.accent);
+  const chint=document.getElementById('contrastHint');
+  chint.textContent=cr>=4.5?'✓ Bon contraste de l\'accent sur fond sombre.':(cr>=3?'⚠ Contraste moyen — texte fin peu lisible.':'✗ Contraste faible — choisis un accent plus clair.');
+  chint.style.color=cr>=4.5?'#5ec98f':(cr>=3?'#e0b05e':'#e08a7e');
+  // mes thèmes sauvegardés
+  function drawMyThemes(){
+    const box=document.getElementById('myThemesBox'); const list=myThemes();
+    if(!list.length){ box.innerHTML='<p class="hint" style="font-size:11px;">Aucun thème perso sauvegardé.</p>'; return; }
+    box.innerHTML='<div class="hint" style="font-size:11px;margin-bottom:6px;">Mes thèmes :</div>'+list.map(t=>`<div class="mytheme-row"><span>${esc(t.name)}</span><span><button class="btn ghost small" data-apply="${esc(t.name)}">appliquer</button> <button class="btn ghost small" data-del="${esc(t.name)}">✕</button></span></div>`).join('');
+    box.querySelectorAll('[data-apply]').forEach(b=>b.onclick=()=>{ const t=myThemes().find(x=>x.name===b.dataset.apply); if(t){ d.style={...DEFAULT_STYLE,...t.style}; toast('Thème appliqué','ok'); mountDesignTab(el,p,d); } });
+    box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ deleteMyTheme(b.dataset.del); drawMyThemes(); });
+  }
+  drawMyThemes();
+
+  live();
+  mountActionBar(el,p,d);
+}
+
+// ===== éditeur d'interface : ordre + visibilité des blocs du profil =====
+const BLOCK_META={ music:'🎵 Musique', socials:'🔗 Icônes sociales', discord:'💬 Carte Discord', customtext:'📝 Texte libre', links:'🔘 Boutons de liens', likes:'❤️ Likes', poll:'📊 Sondage', secret:'🔒 Secret', games:'🎮 Défis', guestbook:'📖 Livre d\'or' };
+const DEFAULT_BLOCK_ORDER=['music','socials','discord','customtext','links','likes','poll','secret','games','guestbook'];
+// résout la config de blocs d'un profil, en complétant les blocs manquants (compat ascendante)
+function resolveBlocks(style){
+  const cfg=(style&&Array.isArray(style.blocks))?style.blocks.slice():[];
+  const seen=new Set(cfg.map(b=>b.k));
+  DEFAULT_BLOCK_ORDER.forEach(k=>{ if(!seen.has(k)) cfg.push({k,on:true}); });
+  return cfg.filter(b=>BLOCK_META[b.k]);
+}
+function renderBlocks(p,parts){
+  return resolveBlocks(p.style).filter(b=>b.on!==false).map(b=>parts[b.k]||'').join('\n    ');
+}
 function profileHTML(p,isOwner){
   // séparer : plateformes sociales connues -> icônes en ligne ; "link" générique -> boutons
   const socialLinks=(p.links||[]).filter(l=>l.platform && l.platform!=='link');
@@ -1291,16 +1754,7 @@ function profileHTML(p,isOwner){
       <div class="stat-row">${p.effects.hideViews?'':`<span class="stat-pill">👁 <b id="viewCount">${totalViews}</b> vues</span>`}<span class="stat-pill presence-live" id="presencePill" style="display:none;"></span></div>
       ${achievementsStripHTML(p)}
     </div>
-    ${p.music?'<div id="vinylMount"></div>':''}
-    ${socialHtml?`<div class="social-inline">${socialHtml}</div>`:''}
-    ${discordCard}
-    ${p.customText?`<div class="customtext">${esc(p.customText)}</div>`:''}
-    ${buttonHtml?`<div class="links">${buttonHtml}</div>`:''}
-    <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:2px;">${likeBtnHTML(p)}</div>
-    <div id="pollBlock"></div>
-    <div id="secretBlock"></div>
-    <div id="gameBlock"></div>
-    <div id="guestbookBlock"></div>
+    ${renderBlocks(p,{music:p.music?'<div id="vinylMount"></div>':'',socials:socialHtml?`<div class="social-inline">${socialHtml}</div>`:'',discord:discordCard,customtext:p.customText?`<div class="customtext">${esc(p.customText)}</div>`:'',links:buttonHtml?`<div class="links">${buttonHtml}</div>`:'',likes:`<div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:2px;">${likeBtnHTML(p)}</div>`,poll:'<div id="pollBlock"></div>',secret:'<div id="secretBlock"></div>',games:'<div id="gameBlock"></div>',guestbook:'<div id="guestbookBlock"></div>'})}
     ${isOwner?'<button class="btn ghost small" id="editBtn">✎ éditer mon profil</button>':''}
     <button class="sharebtn" id="shareBtn">🔗 copier le lien de ce profil</button>
     <footer>uid ${p.uid} · xvy</footer>
@@ -1349,7 +1803,7 @@ async function render(){
     const p=session;
     if(!editDraft || editDraft.uid!==p.uid) editDraft=freshDraft(p);
     const d=editDraft;
-    applyVisual({...p, theme:d.theme, accent:d.accent, opacity:d.opacity, wallpaper:d.wallpaper, effects:d.effects});
+    applyVisual({...p, theme:d.theme, accent:d.accent, opacity:d.opacity, wallpaper:d.wallpaper, effects:d.effects, style:d.style});
     app.className='dash';
     app.innerHTML=`<div class="dash-layout">${sidebarHTML(editTab)}<div class="dash-content" id="dashContent"></div></div>`;
     document.querySelectorAll('.dash-navbtn').forEach(b=>{ b.onclick=()=>{ editTab=b.dataset.tab; render(); }; });
@@ -1358,6 +1812,8 @@ async function render(){
     document.getElementById('dashBack').onclick=()=>{ editDraft=null; view='profile'; viewingUid=p.uid; render(); };
     const contentEl=document.getElementById('dashContent');
     if(editTab==='overview') mountOverviewTab(contentEl,p,d);
+    else if(editTab==='design') mountDesignTab(contentEl,p,d);
+    else if(editTab==='interface') mountInterfaceTab(contentEl,p,d);
     else if(editTab==='links') mountLinksTab(contentEl,p,d);
     else if(editTab==='effects') mountEffectsTab(contentEl,p,d);
     else if(editTab==='stats') mountStatsTab(contentEl,p);
@@ -1758,11 +2214,10 @@ function mountSecret(p){
   document.getElementById('secretPw').onkeydown=e=>{ if(e.key==='Enter') tryUnlock(); };
 }
 
-// ----- mini-jeux : reaction test & CPS, leaderboard "bats mon score" -----
-const GAME_DEFS={
-  reaction:{name:'⚡ Réflexe',unit:'ms',better:'asc',fmt:v=>Math.round(v)+' ms'},
-  cps:{name:'🖱️ Clics/s',unit:'cps',better:'desc',fmt:v=>(+v).toFixed(1)+' cps'}
-};
+// ----- mini-jeux : le formatage/leaderboard s'appuie sur le registre extensible GAME_REGISTRY -----
+const GAME_DEFS=GAME_REGISTRY;
+// liste des jeux jouables (status 'live')
+const LIVE_GAMES=Object.keys(GAME_REGISTRY).filter(k=>GAME_REGISTRY[k].status==='live');
 async function fetchLeaderboard(uid,game){
   const dir=GAME_DEFS[game].better==='asc'?'score.asc':'score.desc';
   try{ return await pgFetch('/game_scores?profile_uid=eq.'+uid+'&game=eq.'+game+'&order='+dir+',created_at.asc&limit=5')||[]; }catch(e){ return []; }
@@ -1772,16 +2227,49 @@ function lbHTML(rows,game){
   const f=GAME_DEFS[game].fmt;
   return rows.map((r,i)=>`<div class="lb-row${session&&r.player_uid===session.uid?' me':''}"><span>${['🥇','🥈','🥉','4.','5.'][i]} ${esc(r.player_name)}</span><b>${f(r.score)}</b></div>`).join('');
 }
+// OWNERSHIP : seul le propriétaire du profil voit/édite la config des défis. Les visiteurs
+// ne voient que les jeux activés par le propriétaire et ne peuvent que jouer (leurs scores).
 async function mountGameBlock(p,isOwner){
   const box=document.getElementById('gameBlock'); if(!box) return;
-  const [lbR,lbC]=await Promise.all([fetchLeaderboard(p.uid,'reaction'),fetchLeaderboard(p.uid,'cps')]);
-  box.innerHTML=`<div class="xvy-block"><h4>🎮 Mini-jeux — bats le meilleur score</h4>
-    <div class="game-btns">
-      <button class="game-btn" data-game="reaction">${GAME_DEFS.reaction.name}<div id="lbReaction" style="margin-top:6px;">${lbHTML(lbR,'reaction')}</div></button>
-      <button class="game-btn" data-game="cps">${GAME_DEFS.cps.name}<div id="lbCps" style="margin-top:6px;">${lbHTML(lbC,'cps')}</div></button>
-    </div></div>`;
+  const cfg={...DEFAULT_GAMES,...(p.games||{}),enabled:{...DEFAULT_GAMES.enabled,...((p.games||{}).enabled||{})}};
+  const activeGames=LIVE_GAMES.filter(g=>cfg.enabled[g]);
+  if(!activeGames.length && !isOwner){ box.innerHTML=''; return; } // rien à montrer aux visiteurs
+  const title=cfg.title||'🎮 Mini-jeux — bats le meilleur score';
+  const boards=await Promise.all(activeGames.map(g=>fetchLeaderboard(p.uid,g)));
+  const btns=activeGames.map((g,i)=>`<button class="game-btn" data-game="${g}">${GAME_REGISTRY[g].name}<div id="lb-${g}" style="margin-top:6px;">${lbHTML(boards[i],g)}</div></button>`).join('');
+  box.innerHTML=`<div class="xvy-block"><h4>${esc(title)}${isOwner?' <span class="game-cfg-btn" id="gameCfgBtn" style="float:right;cursor:pointer;opacity:.7;" title="configurer mes défis">⚙️</span>':''}</h4>
+    ${activeGames.length?`<div class="game-btns">${btns}</div>`:'<p class="hint" style="font-size:12px;">Aucun défi activé. Clique ⚙️ pour en activer.</p>'}</div>`;
   box.querySelectorAll('.game-btn').forEach(b=>{ b.onclick=()=>openGame(p,b.dataset.game); });
+  if(isOwner){ const g=document.getElementById('gameCfgBtn'); if(g) g.onclick=()=>openGameConfig(p); }
   applyLang(box);
+}
+// panneau de config des défis (propriétaire uniquement)
+function openGameConfig(p){
+  const cfg={...DEFAULT_GAMES,...(p.games||{}),enabled:{...DEFAULT_GAMES.enabled,...((p.games||{}).enabled||{})}};
+  const rows=Object.keys(GAME_REGISTRY).map(g=>{
+    const def=GAME_REGISTRY[g]; const soon=def.status!=='live';
+    return `<div class="game-cfg-row"><span>${def.name}${soon?' <span class="hint" style="font-size:10px;">(bientôt)</span>':''}</span>
+      <div class="togglesw${cfg.enabled[g]?' on':''}${soon?' disabled':''}" data-g="${g}" ${soon?'style="opacity:.4;pointer-events:none;"':''}></div></div>`;
+  }).join('');
+  openModal('⚙️ Mes défis',
+    `<div class="field"><label>Titre du bloc (optionnel)</label><input id="gameTitle" maxlength="60" placeholder="🎮 Mini-jeux — bats le meilleur score" value="${esc(cfg.title||'')}"></div>
+     <div style="margin:10px 0;">${rows}</div>
+     <div class="row" style="flex-wrap:wrap;gap:8px;"><button class="btn" id="gameCfgSave">Enregistrer</button><button class="btn ghost" id="gameCfgReset">Réinitialiser les scores</button></div>
+     <p class="hint" style="font-size:11px;margin-top:8px;">Seul toi peux configurer les défis de ton profil.</p>`,
+    (body)=>{
+      const enabled={...cfg.enabled};
+      body.querySelectorAll('[data-g]').forEach(t=>{ if(t.classList.contains('disabled')) return; t.onclick=()=>{ const g=t.dataset.g; enabled[g]=!enabled[g]; t.classList.toggle('on',enabled[g]); }; });
+      body.querySelector('#gameCfgSave').onclick=async()=>{
+        const games={title:(body.querySelector('#gameTitle').value||'').trim(),enabled};
+        try{ await pgFetch('/profiles?uid=eq.'+p.uid,{method:'PATCH',body:JSON.stringify({games})}); p.games=games; if(session&&session.uid===p.uid) session.games=games; closeModal(); toast('Défis mis à jour','ok'); mountGameBlock(p,true); }
+        catch(e){ toast('Erreur de sauvegarde.','err'); }
+      };
+      body.querySelector('#gameCfgReset').onclick=async()=>{
+        if(!confirm('Effacer tous les scores de tes défis ? (irréversible)')) return;
+        try{ await pgFetch('/game_scores?profile_uid=eq.'+p.uid,{method:'DELETE'}); toast('Scores réinitialisés','ok'); closeModal(); mountGameBlock(p,true); }
+        catch(e){ toast('Erreur, réessaie.','err'); }
+      };
+    });
 }
 async function saveScore(p,game,score){
   const name=session?session.username:'anonyme';
@@ -1792,7 +2280,7 @@ async function saveScore(p,game,score){
     const ownerBest=rows.find(r=>r.player_uid===p.uid);
     const better=GAME_DEFS[game].better==='asc'?(r=>score<+r.score):(r=>score>+r.score);
     if(ownerBest&&better(ownerBest)&&(!session||session.uid!==p.uid)) toast('🏆 Tu as battu '+p.username+' !','ok');
-    const el=document.getElementById(game==='reaction'?'lbReaction':'lbCps'); if(el) el.innerHTML=lbHTML(rows,game);
+    const el=document.getElementById('lb-'+game); if(el) el.innerHTML=lbHTML(rows,game);
     if(session&&session.uid===p.uid&&!(p.achievements||[]).includes('gamer')) checkAchievements(p);
   }catch(e){}
 }
@@ -2052,7 +2540,9 @@ function startParticles(enabled, accent){
   if(!enabled){ ctx.clearRect(0,0,cv.width,cv.height); return; }
   function resize(){ cv.width=innerWidth; cv.height=innerHeight; }
   resize(); window.onresize=resize;
-  const N=Math.min(60, Math.floor(innerWidth/22));
+  const intensity=(window.__animIntensity==null?1:window.__animIntensity);
+  if(intensity<=0){ ctx.clearRect(0,0,cv.width,cv.height); return; }
+  const N=Math.min(60, Math.floor(innerWidth/22*intensity));
   const parts=Array.from({length:N},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*2+.6,vy:Math.random()*.5+.15,vx:(Math.random()-.5)*.3,a:Math.random()*.5+.2}));
   const col=accent||'#8fb39d';
   function draw(){
