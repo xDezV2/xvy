@@ -2218,14 +2218,15 @@ function mountSecret(p){
 const GAME_DEFS=GAME_REGISTRY;
 // liste des jeux jouables (status 'live')
 const LIVE_GAMES=Object.keys(GAME_REGISTRY).filter(k=>GAME_REGISTRY[k].status==='live');
+// RECORDS PERSONNELS : on ne lit QUE les scores du propriétaire du profil (player_uid = profile_uid).
 async function fetchLeaderboard(uid,game){
   const dir=GAME_DEFS[game].better==='asc'?'score.asc':'score.desc';
-  try{ return await pgFetch('/game_scores?profile_uid=eq.'+uid+'&game=eq.'+game+'&order='+dir+',created_at.asc&limit=5')||[]; }catch(e){ return []; }
+  try{ return await pgFetch('/game_scores?profile_uid=eq.'+uid+'&player_uid=eq.'+uid+'&game=eq.'+game+'&order='+dir+',created_at.asc&limit=5')||[]; }catch(e){ return []; }
 }
 function lbHTML(rows,game){
-  if(!rows.length) return '<div class="hint" style="font-size:11px;">aucun score — sois le premier !</div>';
+  if(!rows.length) return '<div class="hint" style="font-size:11px;">aucun record pour l\'instant</div>';
   const f=GAME_DEFS[game].fmt;
-  return rows.map((r,i)=>`<div class="lb-row${session&&r.player_uid===session.uid?' me':''}"><span>${['🥇','🥈','🥉','4.','5.'][i]} ${esc(r.player_name)}</span><b>${f(r.score)}</b></div>`).join('');
+  return rows.map((r,i)=>`<div class="lb-row"><span>${['🥇','🥈','🥉','4.','5.'][i]} ${f(r.score)}</span></div>`).join('');
 }
 // OWNERSHIP : seul le propriétaire du profil voit/édite la config des défis. Les visiteurs
 // ne voient que les jeux activés par le propriétaire et ne peuvent que jouer (leurs scores).
@@ -2234,11 +2235,12 @@ async function mountGameBlock(p,isOwner){
   const cfg={...DEFAULT_GAMES,...(p.games||{}),enabled:{...DEFAULT_GAMES.enabled,...((p.games||{}).enabled||{})}};
   const activeGames=LIVE_GAMES.filter(g=>cfg.enabled[g]);
   if(!activeGames.length && !isOwner){ box.innerHTML=''; return; } // rien à montrer aux visiteurs
-  const title=cfg.title||'🎮 Mini-jeux — bats le meilleur score';
+  const title=cfg.title||(isOwner?'🎮 Mes records':'🎮 Records de '+p.username);
+  const sub=isOwner?'Tes meilleurs scores perso — joue pour les battre.':'Records personnels de '+esc(p.username)+' — joue pour t\'amuser (non enregistré ici).';
   const boards=await Promise.all(activeGames.map(g=>fetchLeaderboard(p.uid,g)));
   const btns=activeGames.map((g,i)=>`<button class="game-btn" data-game="${g}">${GAME_REGISTRY[g].name}<div id="lb-${g}" style="margin-top:6px;">${lbHTML(boards[i],g)}</div></button>`).join('');
   box.innerHTML=`<div class="xvy-block"><h4>${esc(title)}${isOwner?' <span class="game-cfg-btn" id="gameCfgBtn" style="float:right;cursor:pointer;opacity:.7;" title="configurer mes défis">⚙️</span>':''}</h4>
-    ${activeGames.length?`<div class="game-btns">${btns}</div>`:'<p class="hint" style="font-size:12px;">Aucun défi activé. Clique ⚙️ pour en activer.</p>'}</div>`;
+    ${activeGames.length?`<p class="hint" style="font-size:11px;margin:-4px 0 8px;">${sub}</p><div class="game-btns">${btns}</div>`:'<p class="hint" style="font-size:12px;">Aucun défi activé. Clique ⚙️ pour en activer.</p>'}</div>`;
   box.querySelectorAll('.game-btn').forEach(b=>{ b.onclick=()=>openGame(p,b.dataset.game); });
   if(isOwner){ const g=document.getElementById('gameCfgBtn'); if(g) g.onclick=()=>openGameConfig(p); }
   applyLang(box);
@@ -2252,7 +2254,7 @@ function openGameConfig(p){
       <div class="togglesw${cfg.enabled[g]?' on':''}${soon?' disabled':''}" data-g="${g}" ${soon?'style="opacity:.4;pointer-events:none;"':''}></div></div>`;
   }).join('');
   openModal('⚙️ Mes défis',
-    `<div class="field"><label>Titre du bloc (optionnel)</label><input id="gameTitle" maxlength="60" placeholder="🎮 Mini-jeux — bats le meilleur score" value="${esc(cfg.title||'')}"></div>
+    `<div class="field"><label>Titre du bloc (optionnel)</label><input id="gameTitle" maxlength="60" placeholder="🎮 Mes records" value="${esc(cfg.title||'')}"></div>
      <div style="margin:10px 0;">${rows}</div>
      <div class="row" style="flex-wrap:wrap;gap:8px;"><button class="btn" id="gameCfgSave">Enregistrer</button><button class="btn ghost" id="gameCfgReset">Réinitialiser les scores</button></div>
      <p class="hint" style="font-size:11px;margin-top:8px;">Seul toi peux configurer les défis de ton profil.</p>`,
@@ -2271,18 +2273,19 @@ function openGameConfig(p){
       };
     });
 }
+// MODÈLE PERSONNEL : un score n'est enregistré QUE sur ton propre profil.
+// Jouer sur le profil d'un autre = pour le fun, rien n'est écrit (et le verrou DB le refuserait de toute façon).
 async function saveScore(p,game,score){
-  const name=session?session.username:'anonyme';
+  if(!session){ toast('Connecte-toi et joue sur ton profil pour enregistrer tes records','err'); return false; }
+  if(session.uid!==p.uid){ toast('Records personnels — joue sur TON profil pour les enregistrer'); return false; }
   try{
-    await pgFetch('/game_scores',{method:'POST',body:JSON.stringify({profile_uid:p.uid,player_uid:session?session.uid:null,player_name:name,game,score})});
-    // "bats le créateur" : compare au meilleur score du proprio du profil
+    await pgFetch('/game_scores',{method:'POST',body:JSON.stringify({profile_uid:session.uid,player_uid:session.uid,player_name:session.username,game,score})});
     const rows=await fetchLeaderboard(p.uid,game);
-    const ownerBest=rows.find(r=>r.player_uid===p.uid);
-    const better=GAME_DEFS[game].better==='asc'?(r=>score<+r.score):(r=>score>+r.score);
-    if(ownerBest&&better(ownerBest)&&(!session||session.uid!==p.uid)) toast('🏆 Tu as battu '+p.username+' !','ok');
     const el=document.getElementById('lb-'+game); if(el) el.innerHTML=lbHTML(rows,game);
-    if(session&&session.uid===p.uid&&!(p.achievements||[]).includes('gamer')) checkAchievements(p);
-  }catch(e){}
+    if(!(p.achievements||[]).includes('gamer')) checkAchievements(p);
+    const best=rows[0]; if(best && +best.score===+score) toast('🏅 Nouveau record perso !','ok');
+    return true;
+  }catch(e){ return false; }
 }
 function openGame(p,game){
   if(game==='reaction'){
