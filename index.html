@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>xdez</title>
+<title>xvy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -704,7 +704,7 @@ function freshDraft(p){
 function sidebarHTML(active){
   const tabs=[['overview','Aperçu'],['customize','Personnaliser'],['links','Liens'],['effects','Effets']];
   return `<div class="dash-side">
-    <div class="dash-logo">🔫 gunzyx</div>
+    <div class="dash-logo">🔫 xvy</div>
     <div class="dash-search"><input placeholder="Rechercher des fonctions..." disabled></div>
     <nav class="dash-nav">${tabs.map(([id,label])=>`<button class="dash-navbtn${active===id?' active':''}" data-tab="${id}">${label}</button>`).join('')}</nav>
     <div class="dash-side-bottom">
@@ -718,8 +718,86 @@ let badgeDefsCache=null, adminSubtab='users';
 async function getBadgeDefs(){ if(!badgeDefsCache){ badgeDefsCache=await listBadgeDefs(); } return badgeDefsCache; }
 function badgeIconSvg(icon){ return ICONS[icon]||iconFor('verified'); }
 // ===== toast & modal =====
-function toast(msg, type){ let w=document.getElementById('toastWrap'); if(!w){ w=document.createElement('div'); w.id='toastWrap'; document.body.appendChild(w); } const t=document.createElement('div'); t.className='toast'+(type?' '+type:''); t.textContent=msg; w.appendChild(t); setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(),300); },2600); }
+function toast(msg, type){ let w=document.getElementById('toastWrap'); if(!w){ w=document.createElement('div'); w.id='toastWrap'; document.body.appendChild(w); } const t=document.createElement('div'); t.className='toast'+(type?' '+type:''); t.textContent=(typeof tr==='function'?tr(msg):msg); w.appendChild(t); setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(),300); },2600); }
 function closeModal(){ const m=document.getElementById('modalBg'); if(m) m.remove(); }
+
+// ===== i18n FR/EN (couche de traduction post-rendu, non destructive) =====
+// Le site est écrit en FR ; quand LANG==='en' on remplace les chaînes connues après chaque rendu.
+// Une chaîne absente du dictionnaire reste simplement en français (dégradation propre).
+let LANG=(function(){ try{ return localStorage.getItem('xvy_lang')||'fr'; }catch(e){ return 'fr'; } })();
+const I18N={
+  // topbar / navigation
+  'profil':'profile','éditer':'edit','membres':'members','quitter':'log out',
+  'se connecter':'sign in','⚡ panel':'⚡ panel','○ non connecté':'○ not signed in',
+  // landing
+  'xvy':'xvy','Crée ton compte pour devenir uid 1, ou explore les membres.':'Create your account to become uid 1, or explore members.',
+  'Connexion / inscription':'Sign in / sign up','Membres':'Members',
+  "Ce profil n'est pas disponible.":"This profile isn't available.",
+  '[ clique pour entrer ]':'[ click to enter ]',
+  // auth
+  'Connexion':'Sign in','Créer un compte':'Create an account',"Nom d'utilisateur":'Username',
+  'mot de passe':'password','pseudo':'username','Se connecter':'Sign in',
+  'Ton identifiant de connexion.':'Your login identifier.','Ton pseudo actuel.':'Your current username.',
+  // barre d'action édition
+  'Enregistrer':'Save','Aperçu':'Preview','Annuler':'Cancel','Confirmer':'Confirm','Changer':'Change',
+  // onglets & sections
+  'Personnaliser':'Customize','Liens':'Links','Effets':'Effects',
+  'Personnalisation générale':'General customization','Personnalisation des couleurs':'Color customization',
+  'Autres personnalisations':'Other customizations','Effets du profil':'Profile effects',
+  'Import de médias':'Media import','Vos liens':'Your links','Connexions':'Connections',
+  'Complétion du profil':'Profile completion','Connectez vos profils de réseaux sociaux':'Connect your social profiles',
+  'Partager votre profil':'Share your profile','Voir votre page':'View your page','Ajouter des liens':'Add links',
+  // champs / labels
+  'Avatar (URL image)':'Avatar (image URL)','Aucun avatar':'No avatar','Arrière-plan (image)':'Background (image)',
+  'Aucune image':'No image','Aucune vidéo':'No video','Image':'Image','Vidéo':'Video',
+  'Vidéo de fond (.mp4, 50 Mo max)':'Background video (.mp4, 50 MB max)',
+  'Type de fond utilisé sur le profil':'Background type used on the profile',
+  'Curseur normal':'Normal cursor','Curseur personnalisé (URL image)':'Custom cursor (image URL)',
+  'Musique de fond (lien YouTube ou mp3)':'Background music (YouTube link or mp3)',
+  'Titre affiché (musique)':'Displayed title (music)','Cover du disque (URL image, vide = avatar)':'Disc cover (image URL, empty = avatar)',
+  'Texte libre (sous le profil)':'Free text (below the profile)','Thème de la carte':'Card theme',
+  'Opacité & flou du profil':'Profile opacity & blur','Flou du profil':'Profile blur',
+  'Tag affiché':'Displayed tag','tag affiché':'displayed tag','nom affiché':'display name',
+  'Description':'Description','bio':'bio','Aucun badge défini.':'No badge defined.',
+  'Présence Discord (ID Lanyard, statut en direct)':'Discord presence (Lanyard ID, live status)',
+  'Masquer le compteur de vues sur le profil':'Hide the view counter on the profile',
+  // discord
+  'Connecte ton compte Discord à xvy.':'Connect your Discord account to xvy.',
+  'compte Discord lié':'linked Discord account','Se connecter avec Discord':'Sign in with Discord',
+  'Délier':'Unlink','Resynchroniser':'Resync','Discord lié':'Discord linked',
+  // annuaire / recherche
+  'Aucun membre. Sois le premier → uid 1.':'No members. Be the first → uid 1.',
+  'Aucun résultat.':'No results.','Membre':'Member',
+  // toasts
+  'Enregistré':'Saved','Erreur de sauvegarde.':'Save error.','Compte Discord lié ✓':'Discord account linked ✓',
+  'Discord délié':'Discord unlinked','Discord : connexion annulée ou refusée':'Discord: sign-in cancelled or denied',
+  'Compte introuvable.':'Account not found.','Mot de passe incorrect.':'Incorrect password.',
+  'Ce pseudo est déjà pris.':'That username is already taken.','Ce compte est banni.':'This account is banned.',
+  'Pseudo trop court (2 caractères min).':'Username too short (2 chars min).',
+  "Connecte-toi d'abord":'Sign in first','Librairie Supabase non chargée (réseau ?)':'Supabase library not loaded (network?)',
+  'UID copié':'UID copied','Lien copié':'Link copied','Préférence enregistrée':'Preference saved',
+  'Erreur, réessaie.':'Error, try again.','Erreur':'Error','Pseudo mis à jour':'Username updated',
+  'Banni':'Banned','Débanni':'Unbanned','Bannir':'Ban','Débannir':'Unban','Supprimer (corbeille)':'Delete (trash)',
+  // placeholders
+  '17-19 chiffres':'17-19 digits','Écris ce que tu veux ici...':'Write whatever you want here...',
+  'note interne...':'internal note...','ou lien .mp4 direct':'or direct .mp4 link',
+  'lien YouTube ou .mp3 direct':'YouTube or direct .mp3 link','https://... (vide = normal)':'https://... (empty = normal)',
+  'Nom de la musique':'Music name','🔍 rechercher un membre...':'🔍 search a member...',
+  'Rechercher des fonctions...':'Search features...','note interne':'internal note'
+};
+function tr(s){ if(LANG!=='en'||s==null) return s; const k=(''+s).trim(); const e=I18N[k]; return e!==undefined?(''+s).replace(k,e):s; }
+function applyLang(root){
+  if(LANG!=='en') return;
+  root=root||document.body;
+  try{
+    const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);
+    const arr=[]; let n; while(n=w.nextNode()) arr.push(n);
+    arr.forEach(node=>{ const raw=node.nodeValue; if(!raw) return; const k=raw.trim(); if(!k) return; const e=I18N[k]; if(e!==undefined && e!==k) node.nodeValue=raw.replace(k,e); });
+    root.querySelectorAll('[placeholder]').forEach(el=>{ const k=(el.getAttribute('placeholder')||'').trim(); if(I18N[k]!==undefined) el.setAttribute('placeholder',I18N[k]); });
+    root.querySelectorAll('[title]').forEach(el=>{ const k=(el.getAttribute('title')||'').trim(); if(I18N[k]!==undefined) el.setAttribute('title',I18N[k]); });
+  }catch(e){}
+}
+function toggleLang(){ LANG=(LANG==='en'?'fr':'en'); try{ localStorage.setItem('xvy_lang',LANG); }catch(e){} if(typeof render==='function') render(); }
 function openModal(title, bodyHtml, onReady){
   closeModal();
   const bg=document.createElement('div'); bg.className='modal-bg'; bg.id='modalBg';
@@ -816,6 +894,7 @@ function renderTopbar(){
   }else{
     acts.append(mk('se connecter',()=>{view='auth';render();}),mk('membres',()=>{view='directory';render();}));
   }
+  acts.append(mk(LANG==='en'?'FR':'EN',toggleLang));
 }
 
 // ===== dashboard d'édition : onglets Aperçu / Personnaliser / Liens / Effets =====
@@ -869,7 +948,7 @@ function mountOverviewTab(el,p,d){
     </div>
     <div class="dash-card">
       <h3>Connexions</h3>
-      <p class="hint" style="margin-bottom:10px;">Connecte ton compte Discord à gunzyx.</p>
+      <p class="hint" style="margin-bottom:10px;">Connecte ton compte Discord à xvy.</p>
       <div id="discordLinkBox"></div>
     </div>
   `;
@@ -1126,7 +1205,7 @@ function profileHTML(p,isOwner){
     <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:2px;">${likeBtnHTML(p)}</div>
     ${isOwner?'<button class="btn ghost small" id="editBtn">✎ éditer mon profil</button>':''}
     <button class="sharebtn" id="shareBtn">🔗 copier le lien de ce profil</button>
-    <footer>uid ${p.uid} · xdez</footer>
+    <footer>uid ${p.uid} · xvy</footer>
   </div></div>`;
 }
 
@@ -1375,7 +1454,7 @@ async function render(){
   let uid=viewingUid||getUrlUid()||(session?session.uid:null);
   if(!uid){
     resetVisual(); app.className='card';
-    app.innerHTML=`<div class="panel"><h2>xdez</h2><p class="hint">Crée ton compte pour devenir uid 1, ou explore les membres.</p><div class="row"><button class="btn" id="gA">Connexion / inscription</button><button class="btn ghost" id="gD">Membres</button></div></div>`;
+    app.innerHTML=`<div class="panel"><h2>xvy</h2><p class="hint">Crée ton compte pour devenir uid 1, ou explore les membres.</p><div class="row"><button class="btn" id="gA">Connexion / inscription</button><button class="btn ghost" id="gD">Membres</button></div></div>`;
     document.getElementById('gA').onclick=()=>{view='auth';render();}; document.getElementById('gD').onclick=()=>{view='directory';render();}; return;
   }
   const p=await getProfile(uid);
@@ -1436,6 +1515,10 @@ async function render(){
   // discord presence via Lanyard
   if(p.discordId) loadDiscord(p.discordId);
 }
+
+// Applique la traduction EN après chaque rendu complet (couvre tous les return anticipés)
+const _xvyRender=render;
+render=function(){ const r=_xvyRender.apply(this,arguments); Promise.resolve(r).then(()=>applyLang()).catch(()=>{}); return r; };
 
 
 // ===== tilt / cursor / discord =====
@@ -1676,7 +1759,7 @@ function setupMusic(p){
 function showSplash(username, cb){
   const existing=document.getElementById('splash'); if(existing) existing.remove();
   const s=document.createElement('div'); s.id='splash';
-  s.innerHTML='<div class="stitle">'+esc(username||'xdez')+'</div><div class="ssub">[ clique pour entrer ]</div>';
+  s.innerHTML='<div class="stitle">'+esc(username||'xvy')+'</div><div class="ssub">[ clique pour entrer ]</div>';
   document.body.appendChild(s);
   const enter=()=>{ s.classList.add('hide'); setTimeout(()=>s.remove(),600); if(mediaPlayer){ const r=mediaPlayer.play(); if(r&&r.catch) r.catch(()=>{}); } if(cb)cb(); };
   s.onclick=enter;
