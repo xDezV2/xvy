@@ -466,6 +466,47 @@
   .game-cfg-row{ display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:13px; border-bottom:1px solid rgba(255,255,255,.05); }
   .blk-row{ display:flex; align-items:center; gap:8px; padding:7px 10px; background:rgba(255,255,255,.04); border-radius:9px; margin-bottom:6px; }
   .blk-row .blk-name{ flex:1; font-size:13px; } .blk-row .blk-move{ cursor:pointer; opacity:.6; padding:0 4px; } .blk-row .blk-move:hover{ opacity:1; }
+
+  /* ===== Game Hub (rendu distinct, plus "console/gaming" que bio guns.lol) ===== */
+  .ghub{ width:100%; text-align:left; border-radius:18px; overflow:hidden; border:1px solid color-mix(in srgb,var(--accent) 30%,rgba(255,255,255,.08));
+    background:linear-gradient(180deg, color-mix(in srgb,var(--accent) 10%,rgba(20,22,28,.85)), rgba(10,12,16,.9)); box-shadow:0 20px 50px -24px rgba(0,0,0,.9); }
+  .ghub-top{ display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.07); }
+  .ghub-top .gh-title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; letter-spacing:.02em; }
+  .ghub-top .gh-status{ margin-left:auto; font-size:11px; font-family:'JetBrains Mono',monospace; padding:4px 9px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); white-space:nowrap; }
+  .ghub-tabs{ display:flex; gap:4px; padding:8px 10px; overflow-x:auto; border-bottom:1px solid rgba(255,255,255,.07); scrollbar-width:none; }
+  .ghub-tabs::-webkit-scrollbar{ display:none; }
+  .ghub-tab{ flex:0 0 auto; background:transparent; border:1px solid transparent; color:var(--text-dim); font-size:11px; font-family:'JetBrains Mono',monospace; padding:6px 11px; border-radius:9px; cursor:pointer; white-space:nowrap; }
+  .ghub-tab.on{ color:var(--text); background:color-mix(in srgb,var(--accent) 20%,transparent); border-color:color-mix(in srgb,var(--accent) 45%,transparent); }
+  .ghub-body{ padding:14px 16px; font-size:13px; }
+  .gh-sec-title{ font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--text-dim); font-family:'JetBrains Mono',monospace; margin:14px 0 7px; }
+  .gh-sec-title:first-child{ margin-top:0; }
+  .gh-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+  .gh-chip{ font-size:11px; padding:5px 10px; border-radius:999px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); }
+  .gh-chip.accent{ background:color-mix(in srgb,var(--accent) 18%,transparent); border-color:color-mix(in srgb,var(--accent) 40%,transparent); }
+  .gh-now{ display:flex; gap:12px; align-items:center; padding:12px; border-radius:14px; background:color-mix(in srgb,var(--accent) 12%,rgba(255,255,255,.03)); border:1px solid color-mix(in srgb,var(--accent) 28%,transparent); }
+  .gh-now .gh-cover{ width:52px; height:52px; border-radius:10px; object-fit:cover; flex-shrink:0; background:rgba(255,255,255,.06); display:flex; align-items:center; justify-content:center; font-size:22px; }
+  .gh-now .gh-np-name{ font-weight:600; font-size:14px; } .gh-now .gh-np-note{ font-size:12px; color:var(--text-dim); }
+  .gh-games{ display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; }
+  .gh-game{ display:flex; align-items:center; gap:7px; padding:8px 10px; border-radius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); font-size:12px; }
+  .gh-game .gh-stars{ margin-left:auto; color:var(--accent); font-size:11px; white-space:nowrap; }
+  .gh-list{ display:flex; flex-direction:column; gap:5px; }
+  .gh-li{ display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 9px; border-radius:8px; background:rgba(255,255,255,.03); }
+  .gh-li .gh-tagdot{ width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .gh-specs{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .gh-spec{ display:flex; justify-content:space-between; gap:8px; padding:7px 10px; border-radius:9px; background:rgba(255,255,255,.03); font-size:12px; }
+  .gh-spec span:first-child{ color:var(--text-dim); } .gh-spec span:last-child{ font-family:'JetBrains Mono',monospace; text-align:right; }
+  .gh-review{ padding:10px 12px; border-radius:11px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); margin-bottom:8px; }
+  .gh-review .gh-rv-head{ display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; } .gh-review .gh-rv-head b{ font-weight:600; }
+  .gh-review .gh-rv-text{ font-size:12px; color:var(--text-dim); }
+  .gh-id-row{ display:flex; justify-content:space-between; gap:8px; padding:7px 10px; border-radius:9px; background:rgba(255,255,255,.03); font-size:12px; cursor:copy; }
+  .gh-id-row:hover{ background:rgba(255,255,255,.06); } .gh-id-row .gh-id-val{ font-family:'JetBrains Mono',monospace; color:var(--accent); }
+  .gh-lfg{ padding:11px 13px; border-radius:12px; background:color-mix(in srgb,#5865F2 16%,transparent); border:1px solid color-mix(in srgb,#5865F2 40%,transparent); font-size:12px; margin-bottom:10px; }
+  .gh-empty{ color:var(--text-dim); font-size:12px; }
+  /* éditeur gaming : listes multi-lignes */
+  .gh-ed-list .gh-ed-item{ display:flex; gap:6px; margin-bottom:6px; }
+  .gh-ed-list input{ flex:1; }
+  .gh-ed-list .gh-ed-rm{ cursor:pointer; opacity:.6; padding:0 6px; align-self:center; } .gh-ed-list .gh-ed-rm:hover{ opacity:1; color:#e08a7e; }
+  .seg.wrap{ flex-wrap:wrap; } .seg.wrap button{ flex:0 0 auto; padding:7px 12px; }
 </style>
 </head>
 <body class="no-wall theme-glass">
@@ -574,6 +615,27 @@ const GAME_REGISTRY={
 };
 // config par défaut des défis (par profil) : quels jeux sont activés + titre custom
 const DEFAULT_GAMES={enabled:{reaction:true,cps:true},title:''};
+
+// ===== Game Hub : identité gaming du profil (tout optionnel) =====
+const DEFAULT_GAMING={
+  enabled:false,                 // affiche le bloc Game Hub sur le profil
+  status:'',                     // ''|online|busy|offline|lfg
+  lfg:false, lfgNote:'',         // "looking for mates"
+  platforms:[],                  // ['pc','ps','xbox','switch','mobile']
+  ids:{},                        // {steam,riot,epic,psn,xbox,battlenet,ea}
+  genres:[], mode:'', difficulty:'',
+  nowPlaying:{name:'',note:'',cover:''},
+  favorites:[],                  // [{name,rating}]
+  backlog:[], wishlist:[], completed:[], dropped:[],
+  setup:{cpu:'',gpu:'',ram:'',monitor:'',mouse:'',keyboard:'',headset:'',sens:'',dpi:'',crosshair:'',res:''},
+  reviews:[],                    // [{game,rating,text}]
+  links:[]                       // [{label,url}]
+};
+const GH_PLATFORMS={pc:'🖥️ PC',ps:'🎮 PlayStation',xbox:'🟢 Xbox',switch:'🔴 Switch',mobile:'📱 Mobile'};
+const GH_IDS={steam:'Steam',riot:'Riot ID',epic:'Epic',psn:'PSN',xbox:'Xbox',battlenet:'Battle.net',ea:'EA'};
+const GH_MODES={solo:'Solo',coop:'Co-op',ranked:'Ranked',chill:'Chill'};
+const GH_DIFF={chill:'Chill',normal:'Normal',hard:'Hard',sweat:'Sweat 😤'};
+const GH_STATUS={online:['🟢','Dispo pour jouer'],busy:['🟠','Occupé'],offline:['⚫','Hors ligne'],lfg:['🔵','Cherche des mates']};
 
 // ===== bibliothèque de polices (chargées à la demande depuis Google Fonts) =====
 const FONTS=[
@@ -745,7 +807,11 @@ async function uploadBgVideo(file,uid){
   return SUPABASE_URL+'/storage/v1/object/public/backgrounds/'+path+'?v='+Date.now();
 }
 async function sha256(s){ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)); return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''); }
-function mapRow(r){ return {uid:r.uid,username:r.username,hash:r.password_hash,tag:r.tag,bio:r.bio,accent:r.accent,links:r.links||[],wallpaper:r.wallpaper||'',theme:r.theme||'glass',avatar:r.avatar||'',customText:r.custom_text||'',opacity:{...DEFAULT_OP,...(r.opacity||{})},isAdmin:!!r.is_admin,banned:!!r.banned,music:r.music||'',views:r.views||0,viewsBonus:r.views_bonus||0,effects:{...DEFAULT_EFFECTS,...(r.effects||{})},badges:r.badges||[],cursorUrl:r.cursor_url||'',discordId:r.discord_id||'',discordUsername:r.discord_username||'',discordGlobalName:r.discord_global_name||'',discordAvatar:r.discord_avatar||'',role:r.role||'user',staffNote:r.staff_note||'',deletedAt:r.deleted_at||null,accountType:r.account_type||'real',excludeFromStats:!!r.exclude_from_stats,seedBatch:r.seed_batch||null,createdByUid:r.created_by_uid||null,likes:r.likes||0,achievements:r.achievements||[],poll:r.poll||null,secret:r.secret||null,style:{...DEFAULT_STYLE,...(r.style||{})},games:{...DEFAULT_GAMES,...(r.games||{}),enabled:{...DEFAULT_GAMES.enabled,...((r.games||{}).enabled||{})}}}; }
+function mapRow(r){ return {uid:r.uid,username:r.username,hash:r.password_hash,tag:r.tag,bio:r.bio,accent:r.accent,links:r.links||[],wallpaper:r.wallpaper||'',theme:r.theme||'glass',avatar:r.avatar||'',customText:r.custom_text||'',opacity:{...DEFAULT_OP,...(r.opacity||{})},isAdmin:!!r.is_admin,banned:!!r.banned,music:r.music||'',views:r.views||0,viewsBonus:r.views_bonus||0,effects:{...DEFAULT_EFFECTS,...(r.effects||{})},badges:r.badges||[],cursorUrl:r.cursor_url||'',discordId:r.discord_id||'',discordUsername:r.discord_username||'',discordGlobalName:r.discord_global_name||'',discordAvatar:r.discord_avatar||'',role:r.role||'user',staffNote:r.staff_note||'',deletedAt:r.deleted_at||null,accountType:r.account_type||'real',excludeFromStats:!!r.exclude_from_stats,seedBatch:r.seed_batch||null,createdByUid:r.created_by_uid||null,likes:r.likes||0,achievements:r.achievements||[],poll:r.poll||null,secret:r.secret||null,style:{...DEFAULT_STYLE,...(r.style||{})},games:{...DEFAULT_GAMES,...(r.games||{}),enabled:{...DEFAULT_GAMES.enabled,...((r.games||{}).enabled||{})}},gaming:mergeGaming(r.gaming)}; }
+// fusion défensive de la config gaming (objets imbriqués + tableaux)
+function mergeGaming(g){ g=g||{}; return {...DEFAULT_GAMING,...g,
+  ids:{...(g.ids||{})}, nowPlaying:{...DEFAULT_GAMING.nowPlaying,...(g.nowPlaying||{})}, setup:{...DEFAULT_GAMING.setup,...(g.setup||{})},
+  platforms:g.platforms||[], genres:g.genres||[], favorites:g.favorites||[], backlog:g.backlog||[], wishlist:g.wishlist||[], completed:g.completed||[], dropped:g.dropped||[], reviews:g.reviews||[], links:g.links||[] }; }
 function isDemo(p){ return p && p.accountType && p.accountType!=='real'; }
 
 // ===== disponibilité pseudo / uid (correction du faux "déjà pris") =====
@@ -800,7 +866,7 @@ async function restoreSession(){
     return p;
   }catch(e){ return null; } // souci réseau : on ne restaure pas mais on ne casse pas non plus
 }
-async function saveProfile(pf){ await pgFetch('/profiles?uid=eq.'+pf.uid,{method:'PATCH',body:JSON.stringify({tag:pf.tag,bio:pf.bio,accent:pf.accent,links:pf.links,wallpaper:pf.wallpaper,theme:pf.theme,avatar:pf.avatar,custom_text:pf.customText,opacity:pf.opacity,music:pf.music,effects:pf.effects,cursor_url:pf.cursorUrl,discord_id:pf.discordId,poll:pf.poll,secret:pf.secret,style:pf.style,games:pf.games})}); }
+async function saveProfile(pf){ await pgFetch('/profiles?uid=eq.'+pf.uid,{method:'PATCH',body:JSON.stringify({tag:pf.tag,bio:pf.bio,accent:pf.accent,links:pf.links,wallpaper:pf.wallpaper,theme:pf.theme,avatar:pf.avatar,custom_text:pf.customText,opacity:pf.opacity,music:pf.music,effects:pf.effects,cursor_url:pf.cursorUrl,discord_id:pf.discordId,poll:pf.poll,secret:pf.secret,style:pf.style,games:pf.games,gaming:pf.gaming})}); }
 async function getProfile(uid){ const r=await pgFetch('/profiles?uid=eq.'+uid+'&select=*'); return r&&r.length?mapRow(r[0]):null; }
 async function listDirectory(){ const r=await pgFetch('/profiles?deleted_at=is.null&select=*&order=uid.asc'); return (r||[]).map(mapRow); }
 async function logAdmin(action, target, oldVal, newVal){
@@ -904,11 +970,12 @@ function freshDraft(p){
     effects:{...DEFAULT_EFFECTS,...p.effects},
     style:{...DEFAULT_STYLE,...(p.style||{})},
     games:{...DEFAULT_GAMES,...(p.games||{}),enabled:{...DEFAULT_GAMES.enabled,...((p.games||{}).enabled||{})}},
+    gaming:JSON.parse(JSON.stringify(mergeGaming(p.gaming))),
     links:JSON.parse(JSON.stringify(p.links||[])).map(l=>({platform:l.platform,raw:l.raw||l.url||'',label:l.label,copy:!!l.copy}))
   };
 }
 function sidebarHTML(active){
-  const tabs=[['overview','Aperçu'],['customize','Personnaliser'],['design','🎨 Design'],['interface','🧩 Interface'],['links','Liens'],['effects','Effets'],['stats','Statistiques']];
+  const tabs=[['overview','Aperçu'],['customize','Personnaliser'],['design','🎨 Design'],['gaming','🎮 Gaming'],['interface','🧩 Interface'],['links','Liens'],['effects','Effets'],['stats','Statistiques']];
   return `<div class="dash-side">
     <div class="dash-logo">🔫 xvy</div>
     <div class="dash-search"><input placeholder="Rechercher des fonctions..." disabled></div>
@@ -1041,7 +1108,22 @@ const I18N={
   'Réinitialiser les scores':'Reset scores','Défis mis à jour':'Challenges updated','Scores réinitialisés':'Scores reset',
   'Seul toi peux configurer les défis de ton profil.':'Only you can configure your profile challenges.',
   'Aucun défi activé. Clique ⚙️ pour en activer.':'No challenge enabled. Click ⚙️ to enable one.',
-  'Preset appliqué':'Preset applied','Thème appliqué':'Theme applied','Donne un nom':'Give it a name'
+  'Preset appliqué':'Preset applied','Thème appliqué':'Theme applied','Donne un nom':'Give it a name',
+  // Game Hub
+  '🎮 Gaming':'🎮 Gaming','🎮 Game Hub':'🎮 Game Hub','Afficher le Game Hub sur mon profil':'Show the Game Hub on my profile',
+  'Disponibilité':'Availability','Mode préféré':'Preferred mode','Difficulté préférée':'Preferred difficulty',
+  '🔵 Looking for mates (cherche des coéquipiers)':'🔵 Looking for mates','Note LFG':'LFG note',
+  'Plateformes':'Platforms','🎯 Jeu du moment':'🎯 Now playing','Nom du jeu':'Game name',
+  'Cover (URL image, optionnel)':'Cover (image URL, optional)','Note rapide':'Quick note',
+  'Mes listes de jeux':'My game lists','Un jeu par ligne.':'One game per line.',
+  '⭐ Top jeux / favoris':'⭐ Top games / favorites','📥 Backlog':'📥 Backlog','💜 Wishlist':'💜 Wishlist',
+  '✅ Terminés':'✅ Completed','🚫 Abandonnés':'🚫 Dropped','Genres préférés':'Favorite genres',
+  'IDs gaming':'Gaming IDs','🖥️ Setup gaming':'🖥️ Gaming setup','Crosshair code (Valorant, optionnel)':'Crosshair code (Valorant, optional)',
+  '📝 Mini-reviews':'📝 Mini reviews','+ ajouter une review':'+ add a review','🔗 Liens utiles gaming':'🔗 Useful gaming links',
+  '+ ajouter un lien':'+ add a link','Overview':'Overview','Now Playing':'Now Playing','Games':'Games','Setup':'Setup',
+  'Play With Me':'Play With Me','Reviews':'Reviews','Style de jeu':'Play style','Ajoute-moi':'Add me','Liens utiles':'Useful links',
+  "Aucune info pour le moment.":'Nothing here yet.',"Ton Game Hub est masqué. Active-le dans l'éditeur → onglet 🎮 Gaming.":'Your Game Hub is hidden. Enable it in the editor → 🎮 Gaming tab.',
+  "Remplis ton Game Hub dans l'éditeur → onglet 🎮 Gaming.":'Fill your Game Hub in the editor → 🎮 Gaming tab.','🎮 Game Hub':'🎮 Game Hub'
 };
 function tr(s){ if(LANG!=='en'||s==null) return s; const k=(''+s).trim(); const e=I18N[k]; return e!==undefined?(''+s).replace(k,e):s; }
 function applyLang(root){
@@ -1207,7 +1289,7 @@ function renderTopbar(){
 function commitDraft(p,d){
   p.avatar=d.avatar; p.bio=d.bio; p.customText=d.customText; p.wallpaper=d.wallpaper;
   p.music=d.music; p.cursorUrl=d.cursorUrl; p.discordId=d.discordId;
-  p.theme=d.theme; p.accent=d.accent; p.opacity=d.opacity; p.effects=d.effects; p.style=d.style; p.games=d.games;
+  p.theme=d.theme; p.accent=d.accent; p.opacity=d.opacity; p.effects=d.effects; p.style=d.style; p.games=d.games; p.gaming=d.gaming;
   p.links=d.links.filter(l=>(l.raw||'').trim()).map(l=>({platform:l.platform,label:(PLATFORMS[l.platform]||PLATFORMS.link).name,raw:l.raw,copy:!!l.copy,url:normalizeUrl(l.platform,l.raw)}));
 }
 function mountActionBar(el,p,d){
@@ -1496,6 +1578,119 @@ function mountEffectsTab(el,p,d){
   mountActionBar(el,p,d);
 }
 
+// ===== onglet 🎮 Gaming : remplir le Game Hub =====
+function mountGamingTab(el,p,d){
+  d.gaming=mergeGaming(d.gaming);
+  const g=d.gaming;
+  const lines=arr=>arr.map(x=>x&&x.name?x.name:x).join('\n');
+  const parseLines=v=>v.split('\n').map(s=>s.trim()).filter(Boolean);
+  el.innerHTML=`
+    <div class="dash-card">
+      <h3>🎮 Game Hub</h3>
+      <div class="tglrow"><span class="tglabel">Afficher le Game Hub sur mon profil</span><div class="togglesw${g.enabled?' on':''}" id="ghEnable"></div></div>
+      <div class="dash-grid2" style="margin-top:12px;">
+        <div class="field"><label>Disponibilité</label><div class="tabs seg wrap" id="ghStatus"><button data-v="">—</button><button data-v="online">🟢 Dispo</button><button data-v="busy">🟠 Occupé</button><button data-v="offline">⚫ Off</button><button data-v="lfg">🔵 LFG</button></div></div>
+        <div class="field"><label>Mode préféré</label><div class="tabs seg wrap" id="ghMode"><button data-v="">—</button><button data-v="solo">Solo</button><button data-v="coop">Co-op</button><button data-v="ranked">Ranked</button><button data-v="chill">Chill</button></div></div>
+      </div>
+      <div class="field" style="margin-top:12px;"><label>Difficulté préférée</label><div class="tabs seg wrap" id="ghDiff"><button data-v="">—</button><button data-v="chill">Chill</button><button data-v="normal">Normal</button><button data-v="hard">Hard</button><button data-v="sweat">Sweat 😤</button></div></div>
+      <div class="tglrow" style="margin-top:12px;"><span class="tglabel">🔵 Looking for mates (cherche des coéquipiers)</span><div class="togglesw${g.lfg?' on':''}" id="ghLfg"></div></div>
+      <div class="field"><label>Note LFG</label><input id="ghLfgNote" maxlength="120" placeholder="ex: ranked Valo le soir, EU, chill" value="${esc(g.lfgNote)}"></div>
+    </div>
+    <div class="dash-card">
+      <h3>Plateformes</h3>
+      <div class="gh-chips" id="ghPlatforms"></div>
+    </div>
+    <div class="dash-card">
+      <h3>🎯 Jeu du moment</h3>
+      <div class="dash-grid2">
+        <div class="field"><label>Nom du jeu</label><input id="ghNpName" maxlength="60" value="${esc(g.nowPlaying.name)}"></div>
+        <div class="field"><label>Cover (URL image, optionnel)</label><input id="ghNpCover" placeholder="https://..." value="${esc(g.nowPlaying.cover)}"></div>
+      </div>
+      <div class="field"><label>Note rapide</label><input id="ghNpNote" maxlength="100" placeholder="ex: rush diamant" value="${esc(g.nowPlaying.note)}"></div>
+    </div>
+    <div class="dash-card">
+      <h3>Mes listes de jeux</h3>
+      <p class="hint" style="margin-bottom:10px;">Un jeu par ligne.</p>
+      <div class="dash-grid2">
+        <div class="field"><label>⭐ Top jeux / favoris</label><textarea id="ghFav" rows="4">${esc(lines(g.favorites))}</textarea></div>
+        <div class="field"><label>📥 Backlog</label><textarea id="ghBacklog" rows="4">${esc(lines(g.backlog))}</textarea></div>
+        <div class="field"><label>💜 Wishlist</label><textarea id="ghWish" rows="4">${esc(lines(g.wishlist))}</textarea></div>
+        <div class="field"><label>✅ Terminés</label><textarea id="ghDone" rows="4">${esc(lines(g.completed))}</textarea></div>
+        <div class="field"><label>🚫 Abandonnés</label><textarea id="ghDrop" rows="4">${esc(lines(g.dropped))}</textarea></div>
+        <div class="field"><label>Genres préférés</label><textarea id="ghGenres" rows="4">${esc(lines(g.genres))}</textarea></div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <h3>IDs gaming</h3>
+      <div class="dash-grid2" id="ghIds"></div>
+    </div>
+    <div class="dash-card">
+      <h3>🖥️ Setup gaming</h3>
+      <div class="dash-grid2" id="ghSetup"></div>
+      <div class="field" style="margin-top:12px;"><label>Crosshair code (Valorant, optionnel)</label><input id="ghCross" placeholder="0;P;c;1;..." value="${esc(g.setup.crosshair)}"></div>
+    </div>
+    <div class="dash-card">
+      <h3>📝 Mini-reviews</h3>
+      <div id="ghReviews"></div>
+      <button class="btn ghost small" id="ghAddReview" style="margin-top:8px;">+ ajouter une review</button>
+    </div>
+    <div class="dash-card">
+      <h3>🔗 Liens utiles gaming</h3>
+      <div id="ghLinks"></div>
+      <button class="btn ghost small" id="ghAddLink" style="margin-top:8px;">+ ajouter un lien</button>
+    </div>
+  `;
+  // toggles
+  document.getElementById('ghEnable').onclick=e=>{ g.enabled=!g.enabled; e.target.classList.toggle('on',g.enabled); };
+  document.getElementById('ghLfg').onclick=e=>{ g.lfg=!g.lfg; e.target.classList.toggle('on',g.lfg); };
+  document.getElementById('ghLfgNote').oninput=e=>g.lfgNote=e.target.value;
+  // segmented
+  const segm=(id,get,set)=>{ const box=document.getElementById(id); const draw=()=>[...box.children].forEach(b=>b.classList.toggle('active',b.dataset.v===(get()||''))); draw(); [...box.children].forEach(b=>b.onclick=()=>{ set(b.dataset.v); draw(); }); };
+  segm('ghStatus',()=>g.status,v=>g.status=v);
+  segm('ghMode',()=>g.mode,v=>g.mode=v);
+  segm('ghDiff',()=>g.difficulty,v=>g.difficulty=v);
+  // platforms multi
+  const pf=document.getElementById('ghPlatforms');
+  Object.entries(GH_PLATFORMS).forEach(([k,label])=>{ const c=document.createElement('span'); c.className='gh-chip'+(g.platforms.includes(k)?' accent':''); c.style.cursor='pointer'; c.textContent=label;
+    c.onclick=()=>{ const i=g.platforms.indexOf(k); if(i<0) g.platforms.push(k); else g.platforms.splice(i,1); c.classList.toggle('accent',g.platforms.includes(k)); }; pf.appendChild(c); });
+  // now playing
+  document.getElementById('ghNpName').oninput=e=>g.nowPlaying.name=e.target.value;
+  document.getElementById('ghNpCover').oninput=e=>g.nowPlaying.cover=e.target.value;
+  document.getElementById('ghNpNote').oninput=e=>g.nowPlaying.note=e.target.value;
+  // listes
+  const bindList=(id,key)=>{ document.getElementById(id).oninput=e=>g[key]=parseLines(e.target.value); };
+  bindList('ghFav','favorites'); bindList('ghBacklog','backlog'); bindList('ghWish','wishlist'); bindList('ghDone','completed'); bindList('ghDrop','dropped'); bindList('ghGenres','genres');
+  // ids
+  const idsBox=document.getElementById('ghIds');
+  Object.entries(GH_IDS).forEach(([k,label])=>{ const f=document.createElement('div'); f.className='field'; f.innerHTML=`<label>${label}</label><input value="${esc(g.ids[k]||'')}">`;
+    f.querySelector('input').oninput=e=>{ g.ids[k]=e.target.value.trim(); }; idsBox.appendChild(f); });
+  // setup
+  const setupBox=document.getElementById('ghSetup');
+  [['cpu','CPU'],['gpu','GPU'],['ram','RAM'],['monitor','Écran'],['mouse','Souris'],['keyboard','Clavier'],['headset','Casque'],['res','Résolution'],['sens','Sensibilité'],['dpi','DPI']].forEach(([k,label])=>{
+    const f=document.createElement('div'); f.className='field'; f.innerHTML=`<label>${label}</label><input value="${esc(g.setup[k]||'')}">`;
+    f.querySelector('input').oninput=e=>{ g.setup[k]=e.target.value; }; setupBox.appendChild(f); });
+  document.getElementById('ghCross').oninput=e=>g.setup.crosshair=e.target.value;
+  // reviews (repeatable)
+  const rv=document.getElementById('ghReviews');
+  function drawReviews(){ rv.innerHTML=''; g.reviews.forEach((r,i)=>{ const row=document.createElement('div'); row.className='gh-ed-item';
+    row.innerHTML=`<input placeholder="jeu" value="${esc(r.game||'')}" data-f="game" style="flex:2;"><select data-f="rating" style="flex:0 0 70px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:var(--text);">${[5,4,3,2,1].map(n=>`<option value="${n}"${(+r.rating||5)===n?' selected':''}>${n}★</option>`).join('')}</select><input placeholder="avis court" value="${esc(r.text||'')}" data-f="text" style="flex:3;"><span class="gh-ed-rm">✕</span>`;
+    row.querySelectorAll('[data-f]').forEach(inp=>inp.oninput=()=>{ r[inp.dataset.f]=inp.dataset.f==='rating'?+inp.value:inp.value; });
+    row.querySelector('.gh-ed-rm').onclick=()=>{ g.reviews.splice(i,1); drawReviews(); };
+    rv.appendChild(row); }); rv.className='gh-ed-list'; }
+  drawReviews();
+  document.getElementById('ghAddReview').onclick=()=>{ g.reviews.push({game:'',rating:5,text:''}); drawReviews(); };
+  // links (repeatable)
+  const lk=document.getElementById('ghLinks');
+  function drawLinks(){ lk.innerHTML=''; g.links.forEach((l,i)=>{ const row=document.createElement('div'); row.className='gh-ed-item';
+    row.innerHTML=`<input placeholder="titre" value="${esc(l.label||'')}" data-f="label"><input placeholder="https://..." value="${esc(l.url||'')}" data-f="url" style="flex:2;"><span class="gh-ed-rm">✕</span>`;
+    row.querySelectorAll('[data-f]').forEach(inp=>inp.oninput=()=>{ l[inp.dataset.f]=inp.value; });
+    row.querySelector('.gh-ed-rm').onclick=()=>{ g.links.splice(i,1); drawLinks(); };
+    lk.appendChild(row); }); lk.className='gh-ed-list'; }
+  drawLinks();
+  document.getElementById('ghAddLink').onclick=()=>{ g.links.push({label:'',url:''}); drawLinks(); };
+  mountActionBar(el,p,d);
+}
+
 // ===== onglet 🧩 Interface : réordonner et masquer les blocs du profil =====
 function mountInterfaceTab(el,p,d){
   d.style={...DEFAULT_STYLE,...(d.style||{})};
@@ -1702,8 +1897,8 @@ function mountDesignTab(el,p,d){
 }
 
 // ===== éditeur d'interface : ordre + visibilité des blocs du profil =====
-const BLOCK_META={ music:'🎵 Musique', socials:'🔗 Icônes sociales', discord:'💬 Carte Discord', customtext:'📝 Texte libre', links:'🔘 Boutons de liens', likes:'❤️ Likes', poll:'📊 Sondage', secret:'🔒 Secret', games:'🎮 Défis', guestbook:'📖 Livre d\'or' };
-const DEFAULT_BLOCK_ORDER=['music','socials','discord','customtext','links','likes','poll','secret','games','guestbook'];
+const BLOCK_META={ music:'🎵 Musique', socials:'🔗 Icônes sociales', discord:'💬 Carte Discord', gamehub:'🎮 Game Hub', customtext:'📝 Texte libre', links:'🔘 Boutons de liens', likes:'❤️ Likes', poll:'📊 Sondage', secret:'🔒 Secret', games:'🕹️ Défis', guestbook:'📖 Livre d\'or' };
+const DEFAULT_BLOCK_ORDER=['music','socials','discord','gamehub','customtext','links','likes','poll','secret','games','guestbook'];
 // résout la config de blocs d'un profil, en complétant les blocs manquants (compat ascendante)
 function resolveBlocks(style){
   const cfg=(style&&Array.isArray(style.blocks))?style.blocks.slice():[];
@@ -1754,7 +1949,7 @@ function profileHTML(p,isOwner){
       <div class="stat-row">${p.effects.hideViews?'':`<span class="stat-pill">👁 <b id="viewCount">${totalViews}</b> vues</span>`}<span class="stat-pill presence-live" id="presencePill" style="display:none;"></span></div>
       ${achievementsStripHTML(p)}
     </div>
-    ${renderBlocks(p,{music:p.music?'<div id="vinylMount"></div>':'',socials:socialHtml?`<div class="social-inline">${socialHtml}</div>`:'',discord:discordCard,customtext:p.customText?`<div class="customtext">${esc(p.customText)}</div>`:'',links:buttonHtml?`<div class="links">${buttonHtml}</div>`:'',likes:`<div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:2px;">${likeBtnHTML(p)}</div>`,poll:'<div id="pollBlock"></div>',secret:'<div id="secretBlock"></div>',games:'<div id="gameBlock"></div>',guestbook:'<div id="guestbookBlock"></div>'})}
+    ${renderBlocks(p,{music:p.music?'<div id="vinylMount"></div>':'',socials:socialHtml?`<div class="social-inline">${socialHtml}</div>`:'',discord:discordCard,gamehub:'<div id="gameHubBlock"></div>',customtext:p.customText?`<div class="customtext">${esc(p.customText)}</div>`:'',links:buttonHtml?`<div class="links">${buttonHtml}</div>`:'',likes:`<div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:2px;">${likeBtnHTML(p)}</div>`,poll:'<div id="pollBlock"></div>',secret:'<div id="secretBlock"></div>',games:'<div id="gameBlock"></div>',guestbook:'<div id="guestbookBlock"></div>'})}
     ${isOwner?'<button class="btn ghost small" id="editBtn">✎ éditer mon profil</button>':''}
     <button class="sharebtn" id="shareBtn">🔗 copier le lien de ce profil</button>
     <footer>uid ${p.uid} · xvy</footer>
@@ -1813,6 +2008,7 @@ async function render(){
     const contentEl=document.getElementById('dashContent');
     if(editTab==='overview') mountOverviewTab(contentEl,p,d);
     else if(editTab==='design') mountDesignTab(contentEl,p,d);
+    else if(editTab==='gaming') mountGamingTab(contentEl,p,d);
     else if(editTab==='interface') mountInterfaceTab(contentEl,p,d);
     else if(editTab==='links') mountLinksTab(contentEl,p,d);
     else if(editTab==='effects') mountEffectsTab(contentEl,p,d);
@@ -1986,6 +2182,7 @@ async function render(){
     startParticles(p.effects.particles,p.accent); applyCursor(p.cursorUrl); setupTilt(p.effects.tilt!==false);
     setupMusic(p);
     if(p.discordId) loadDiscord(p.discordId);
+    mountGameHub(p);
     const sb=document.getElementById('shareBtn'); if(sb) sb.style.display='none';
     return;
   }
@@ -2076,6 +2273,7 @@ async function render(){
   if(p.discordId) loadDiscord(p.discordId);
   // features xvy : présence live, sondage, secret, mini-jeux, livre d'or, succès, tracking clics
   mountPresence(p);
+  mountGameHub(p);
   mountPoll(p);
   mountSecret(p);
   mountGameBlock(p,isOwner);
@@ -2218,6 +2416,92 @@ function mountSecret(p){
 const GAME_DEFS=GAME_REGISTRY;
 // liste des jeux jouables (status 'live')
 const LIVE_GAMES=Object.keys(GAME_REGISTRY).filter(k=>GAME_REGISTRY[k].status==='live');
+// ===== Game Hub : rendu public (identité gaming, sous-onglets) =====
+function ghStars(n){ n=Math.max(0,Math.min(5,+n||0)); return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n); }
+function ghHasContent(g){
+  return g.status||g.lfg||g.platforms.length||Object.values(g.ids).some(Boolean)||g.genres.length||g.mode||g.difficulty||
+    g.nowPlaying.name||g.favorites.length||g.backlog.length||g.wishlist.length||g.completed.length||g.dropped.length||
+    Object.values(g.setup).some(Boolean)||g.reviews.length||g.links.length;
+}
+function mountGameHub(p){
+  const box=document.getElementById('gameHubBlock'); if(!box) return;
+  const g=mergeGaming(p.gaming);
+  const isOwner=session&&session.uid===p.uid;
+  if((!g.enabled||!ghHasContent(g)) && !isOwner){ box.innerHTML=''; return; }
+  if(!g.enabled && isOwner){ box.innerHTML=`<div class="ghub"><div class="ghub-top"><span class="gh-title">🎮 Game Hub</span></div><div class="ghub-body"><p class="gh-empty">Ton Game Hub est masqué. Active-le dans l'éditeur → onglet 🎮 Gaming.</p></div></div>`; return; }
+
+  // sections disponibles
+  const tabs=[];
+  const hasOverview=g.platforms.length||g.genres.length||g.mode||g.difficulty||Object.values(g.ids).some(Boolean);
+  if(hasOverview) tabs.push(['overview','Overview']);
+  if(g.nowPlaying.name) tabs.push(['now','Now Playing']);
+  if(g.favorites.length||g.backlog.length||g.wishlist.length||g.completed.length||g.dropped.length) tabs.push(['games','Games']);
+  if(Object.values(g.setup).some(Boolean)) tabs.push(['setup','Setup']);
+  if(g.lfg||g.status||Object.values(g.ids).some(Boolean)||g.links.length) tabs.push(['pwm','Play With Me']);
+  if(g.reviews.length) tabs.push(['reviews','Reviews']);
+  if(!tabs.length){ if(isOwner){ box.innerHTML=`<div class="ghub"><div class="ghub-top"><span class="gh-title">🎮 Game Hub</span></div><div class="ghub-body"><p class="gh-empty">Remplis ton Game Hub dans l'éditeur → onglet 🎮 Gaming.</p></div></div>`; } else box.innerHTML=''; return; }
+
+  const st=g.status&&GH_STATUS[g.status];
+  let active=tabs[0][0];
+  function chips(items,cls){ return `<div class="gh-chips">${items.map(x=>`<span class="gh-chip${cls?' '+cls:''}">${x}</span>`).join('')}</div>`; }
+  function gameList(arr,dot){ return `<div class="gh-list">${arr.map(x=>`<div class="gh-li"><span class="gh-tagdot" style="background:${dot}"></span>${esc(x.name||x)}</div>`).join('')}</div>`; }
+  function sectionHTML(tab){
+    if(tab==='overview'){
+      let h='';
+      if(g.platforms.length){ h+=`<div class="gh-sec-title">Plateformes</div>${chips(g.platforms.map(k=>GH_PLATFORMS[k]||k))}`; }
+      if(g.mode||g.difficulty){ const t=[]; if(g.mode) t.push(GH_MODES[g.mode]||g.mode); if(g.difficulty) t.push(GH_DIFF[g.difficulty]||g.difficulty); h+=`<div class="gh-sec-title">Style de jeu</div>${chips(t,'accent')}`; }
+      if(g.genres.length){ h+=`<div class="gh-sec-title">Genres préférés</div>${chips(g.genres)}`; }
+      const ids=Object.entries(g.ids).filter(([k,v])=>v);
+      if(ids.length){ h+=`<div class="gh-sec-title">IDs gaming</div>`+ids.map(([k,v])=>`<div class="gh-id-row" data-copy="${esc(v)}"><span>${GH_IDS[k]||k}</span><span class="gh-id-val">${esc(v)} ⧉</span></div>`).join(''); }
+      return h;
+    }
+    if(tab==='now'){
+      const n=g.nowPlaying;
+      return `<div class="gh-now"><div class="gh-cover">${n.cover?`<img src="${esc(n.cover)}" class="gh-cover" alt="">`:'🎮'}</div><div><div class="gh-np-name">${esc(n.name)}</div>${n.note?`<div class="gh-np-note">${esc(n.note)}</div>`:''}</div></div>`;
+    }
+    if(tab==='games'){
+      let h='';
+      if(g.favorites.length){ h+=`<div class="gh-sec-title">⭐ Top jeux</div><div class="gh-games">${g.favorites.map(f=>`<div class="gh-game">${esc(f.name||f)}${f.rating?`<span class="gh-stars">${ghStars(f.rating)}</span>`:''}</div>`).join('')}</div>`; }
+      if(g.nowPlaying.name){ h+=`<div class="gh-sec-title">🎯 Du moment</div>${gameList([g.nowPlaying],'var(--accent)')}`; }
+      if(g.backlog.length){ h+=`<div class="gh-sec-title">📥 Backlog</div>${gameList(g.backlog,'#7a8fc9')}`; }
+      if(g.wishlist.length){ h+=`<div class="gh-sec-title">💜 Wishlist</div>${gameList(g.wishlist,'#b57edc')}`; }
+      if(g.completed.length){ h+=`<div class="gh-sec-title">✅ Terminés</div>${gameList(g.completed,'#5ec98f')}`; }
+      if(g.dropped.length){ h+=`<div class="gh-sec-title">🚫 Abandonnés</div>${gameList(g.dropped,'#e08a7e')}`; }
+      return h;
+    }
+    if(tab==='setup'){
+      const s=g.setup; const specs=[['CPU',s.cpu],['GPU',s.gpu],['RAM',s.ram],['Écran',s.monitor],['Souris',s.mouse],['Clavier',s.keyboard],['Casque',s.headset],['Résolution',s.res],['Sensibilité',s.sens],['DPI',s.dpi]].filter(x=>x[1]);
+      let h=specs.length?`<div class="gh-specs">${specs.map(([k,v])=>`<div class="gh-spec"><span>${k}</span><span>${esc(v)}</span></div>`).join('')}</div>`:'';
+      if(s.crosshair){ h+=`<div class="gh-sec-title">Crosshair code</div><div class="gh-id-row" data-copy="${esc(s.crosshair)}"><span>Valorant</span><span class="gh-id-val">${esc(s.crosshair)} ⧉</span></div>`; }
+      return h;
+    }
+    if(tab==='pwm'){
+      let h='';
+      if(g.lfg){ h+=`<div class="gh-lfg">🔵 <b>Cherche des mates</b>${g.lfgNote?' — '+esc(g.lfgNote):''}</div>`; }
+      if(st){ h+=`<div class="gh-sec-title">Disponibilité</div><div class="gh-chips"><span class="gh-chip accent">${st[0]} ${st[1]}</span></div>`; }
+      const ids=Object.entries(g.ids).filter(([k,v])=>v);
+      if(ids.length){ h+=`<div class="gh-sec-title">Ajoute-moi</div>`+ids.map(([k,v])=>`<div class="gh-id-row" data-copy="${esc(v)}"><span>${GH_IDS[k]||k}</span><span class="gh-id-val">${esc(v)} ⧉</span></div>`).join(''); }
+      if(g.links.length){ h+=`<div class="gh-sec-title">Liens utiles</div>`+g.links.map(l=>`<div class="gh-li">🔗 <a href="${esc(l.url)}" target="_blank" rel="noopener" style="color:var(--accent);">${esc(l.label||l.url)}</a></div>`).join(''); }
+      return h||'<p class="gh-empty">Aucune info pour le moment.</p>';
+    }
+    if(tab==='reviews'){
+      return g.reviews.map(r=>`<div class="gh-review"><div class="gh-rv-head"><b>${esc(r.game)}</b><span class="gh-stars" style="color:var(--accent)">${ghStars(r.rating)}</span></div>${r.text?`<div class="gh-rv-text">${esc(r.text)}</div>`:''}</div>`).join('');
+    }
+    return '';
+  }
+  function draw(){
+    box.innerHTML=`<div class="ghub">
+      <div class="ghub-top"><span class="gh-title">🎮 Game Hub</span>${st?`<span class="gh-status">${st[0]} ${st[1]}</span>`:''}</div>
+      <div class="ghub-tabs">${tabs.map(([k,l])=>`<button class="ghub-tab${k===active?' on':''}" data-t="${k}">${l}</button>`).join('')}</div>
+      <div class="ghub-body" id="ghBody">${sectionHTML(active)}</div>
+    </div>`;
+    box.querySelectorAll('.ghub-tab').forEach(b=>b.onclick=()=>{ active=b.dataset.t; draw(); });
+    box.querySelectorAll('#ghBody [data-copy]').forEach(el=>el.onclick=()=>{ const v=el.getAttribute('data-copy'); navigator.clipboard.writeText(v).then(()=>toast('Copié : '+v,'ok')).catch(()=>{}); });
+    applyLang(box);
+  }
+  draw();
+}
+
 // RECORDS PERSONNELS : on ne lit QUE les scores du propriétaire du profil (player_uid = profile_uid).
 async function fetchLeaderboard(uid,game){
   const dir=GAME_DEFS[game].better==='asc'?'score.asc':'score.desc';
