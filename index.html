@@ -2615,6 +2615,7 @@ async function _render(){
     if(can(session,'manage_badge_defs')) tabs.push(['badges','Badges']);
     if(can(session,'delete_profiles')) tabs.push(['trash','Corbeille']);
     if(can(session,'create_demo')) tabs.push(['demo','Démo']);
+    if(can(session,'grant_premium')) tabs.push(['premium','💎 Premium']);
     if(can(session,'manage_staff')) tabs.push(['ai','🤖 IA']);
     tabs.forEach(([id,label])=>{ const b=document.createElement('button'); b.textContent=label; if(id===adminSubtab) b.className='active'; b.onclick=()=>{ adminSubtab=id; render(); }; st.appendChild(b); });
     const content=document.getElementById('adminContent');
@@ -2749,6 +2750,54 @@ async function _render(){
         act.appendChild(del);
         bl.appendChild(row);
       });
+      return;
+    }
+
+    if(adminSubtab==='premium'){
+      if(!can(session,'grant_premium')){ content.innerHTML='<p class="hint">Accès refusé.</p>'; return; }
+      content.innerHTML=`
+        <div class="dash-card"><h3>🎁 Donner Premium à un membre</h3>
+          <div class="field"><label>pseudo du membre</label><input id="gpUser" placeholder="ex: xdez"></div>
+          <div class="row"><select id="gpTier" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--text);padding:0 10px;"><option value="plus">Plus</option><option value="pro">Pro</option><option value="free">Retirer (Free)</option></select><input id="gpDays" type="number" value="30" placeholder="jours"><button class="btn" id="gpBtn">Donner</button></div>
+          <div id="gpOut" class="hint" style="margin-top:8px;"></div>
+        </div>
+        <div class="dash-card"><h3>🎟️ Générer un code de réduction / premium</h3>
+          <div class="row"><input id="gcCode" placeholder="code (vide = auto)"><select id="gcTier" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--text);padding:0 10px;"><option value="plus">Plus</option><option value="pro">Pro</option></select></div>
+          <div class="row" style="margin-top:8px;"><input id="gcPct" type="number" min="1" max="100" value="100" placeholder="% (100=gratuit)"><input id="gcDays" type="number" value="30" placeholder="jours"><input id="gcMax" type="number" value="1" placeholder="usages"></div>
+          <button class="btn small" id="gcBtn" style="margin-top:8px;">Créer le code</button>
+          <div id="gcOut" class="hint" style="margin-top:8px;"></div>
+          <div id="gcList" style="margin-top:10px;"></div>
+        </div>
+        <div class="dash-card"><h3>💳 Liens de paiement (Stripe)</h3>
+          <p class="hint" style="margin-bottom:8px;">Colle tes Stripe Payment Links ; les boutons « Passer Plus/Pro » de la page Premium les ouvriront.</p>
+          <div class="field"><label>Lien Plus</label><input id="stPlus" placeholder="https://buy.stripe.com/..."></div>
+          <div class="field"><label>Lien Pro</label><input id="stPro" placeholder="https://buy.stripe.com/..."></div>
+          <button class="btn small" id="stSave">Enregistrer les liens</button>
+        </div>`;
+      // pré-remplir liens stripe
+      getSetting('stripe_links').then(s=>{ s=s||{}; const a=document.getElementById('stPlus'),b=document.getElementById('stPro'); if(a)a.value=s.plus||''; if(b)b.value=s.pro||''; }).catch(()=>{});
+      document.getElementById('gpBtn').onclick=async()=>{
+        const uname=document.getElementById('gpUser').value.trim(); if(!uname) return;
+        const tier=document.getElementById('gpTier').value; const days=parseInt(document.getElementById('gpDays').value,10)||30;
+        try{ const r=await pgFetch('/profiles?select=uid,username'); const row=(r||[]).find(x=>x.username.toLowerCase()===uname.toLowerCase());
+          if(!row){ document.getElementById('gpOut').textContent='Membre introuvable.'; return; }
+          await callRpc('admin_grant_premium',{p_target:row.uid,p_tier:tier,p_days:days});
+          document.getElementById('gpOut').innerHTML='✅ <b>'+esc(row.username)+'</b> est maintenant '+(tier==='free'?'Free':tier.toUpperCase())+(tier!=='free'?' pour '+days+' jours':'')+'.';
+        }catch(e){ document.getElementById('gpOut').textContent='Erreur.'; }
+      };
+      const loadCodes=async()=>{ const el=document.getElementById('gcList'); if(!el) return;
+        try{ const r=await callRpc('admin_list_codes',{}); const codes=Array.isArray(r)?(Array.isArray(r[0])?r[0]:r):(r||[]);
+          el.innerHTML=codes.length?('<div class="hint" style="margin-bottom:4px;">Codes :</div>'+codes.slice(0,30).map(c=>`<div class="lb-row"><span style="cursor:copy" data-cc="${esc(c.code)}"><b>${esc(c.code)}</b> · ${c.tier} · ${c.duration_days}j · ${c.discount_pct||100}%</span><b>${c.uses}/${c.max_uses}</b></div>`).join('')):'<span class="hint">Aucun code.</span>';
+          el.querySelectorAll('[data-cc]').forEach(s=>s.onclick=()=>navigator.clipboard.writeText(s.dataset.cc).then(()=>toast('Code copié','ok')).catch(()=>{}));
+        }catch(e){} };
+      document.getElementById('gcBtn').onclick=async()=>{
+        const code=document.getElementById('gcCode').value.trim()||('XVY-'+Math.random().toString(36).slice(2,8).toUpperCase());
+        try{ await callRpc('admin_create_premium_code',{p_code:code,p_tier:document.getElementById('gcTier').value,p_days:+document.getElementById('gcDays').value||30,p_max:+document.getElementById('gcMax').value||1,p_discount:+document.getElementById('gcPct').value||100});
+          document.getElementById('gcOut').innerHTML='Code créé : <b style="color:var(--accent)">'+esc(code.toUpperCase())+'</b>'; document.getElementById('gcCode').value=''; loadCodes(); }
+        catch(e){ toast('Erreur création code','err'); }
+      };
+      document.getElementById('stSave').onclick=async()=>{ try{ await setSetting('stripe_links',{plus:document.getElementById('stPlus').value.trim(),pro:document.getElementById('stPro').value.trim()}); toast('Liens enregistrés ✓','ok'); }catch(e){ toast('Erreur','err'); } };
+      loadCodes();
       return;
     }
 
